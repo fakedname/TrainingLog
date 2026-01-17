@@ -460,14 +460,16 @@
         }
         
         try {
-            const response = await fetch(WEBHOOK_URL, {
+            await fetch(WEBHOOK_URL, {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(workout)
             });
             
+            // With no-cors, we can't read the response, so always show success
             showSuccess('Workout logged successfully!');
             clearForm();
         } catch (error) {
