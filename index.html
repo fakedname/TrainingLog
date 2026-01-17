@@ -2,285 +2,401 @@
 
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plate Calculator</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Logger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
 ```
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-padding: 20px;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.container {
-background: white;
-border-radius: 20px;
-padding: 30px;
-max-width: 500px;
-width: 100%;
-box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-
-h1 {
-color: #333;
-margin-bottom: 10px;
-font-size: 28px;
-}
-
-.subtitle {
-color: #666;
-margin-bottom: 25px;
-font-size: 14px;
-}
-
-.input-group {
-margin-bottom: 20px;
-}
-
-label {
-display: block;
-margin-bottom: 8px;
-color: #555;
-font-weight: 600;
-}
-
-input[type="number"] {
-width: 100%;
-padding: 15px;
-font-size: 24px;
-border: 2px solid #ddd;
-border-radius: 10px;
-text-align: center;
-transition: border-color 0.3s;
-}
-
-input[type="number"]:focus {
-outline: none;
-border-color: #667eea;
-}
-
-button {
-width: 100%;
-padding: 15px;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-color: white;
-border: none;
-border-radius: 10px;
-font-size: 18px;
-font-weight: 600;
-cursor: pointer;
-transition: transform 0.2s;
-}
-
-button:active {
-transform: scale(0.98);
-}
-
-.results {
-margin-top: 25px;
-padding: 20px;
-background: #f8f9fa;
-border-radius: 10px;
-display: none;
-}
-
-.results.show {
-display: block;
-}
-
-.result-header {
-font-size: 14px;
-color: #666;
-margin-bottom: 15px;
-}
-
-.result-header strong {
-color: #333;
-font-size: 16px;
-}
-
-.plates-list {
-background: white;
-padding: 15px;
-border-radius: 8px;
-margin-bottom: 15px;
-}
-
-.plates-list h3 {
-color: #667eea;
-margin-bottom: 10px;
-font-size: 16px;
-}
-
-.plate-item {
-padding: 10px;
-margin: 5px 0;
-background: #f0f0f0;
-border-radius: 5px;
-font-size: 18px;
-font-weight: 600;
-}
-
-.percentages {
-background: white;
-padding: 15px;
-border-radius: 8px;
-}
-
-.percentages h3 {
-color: #667eea;
-margin-bottom: 10px;
-font-size: 16px;
-}
-
-.pct-item {
-padding: 8px;
-margin: 5px 0;
-display: flex;
-justify-content: space-between;
-font-size: 16px;
-}
-
-.pct-label {
-font-weight: 600;
-color: #555;
-}
-
-.pct-value {
-color: #333;
-}
-
-.error {
-color: #e74c3c;
-margin-top: 10px;
-font-size: 14px;
-}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+    
+    .subtitle {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+    
+    .date-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .date-section label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+    }
+    
+    input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    .lift-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .lift-section h3 {
+        color: #f5576c;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    
+    .lift-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    select, input[type="text"], textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+    }
+    
+    select:focus, input:focus, textarea:focus {
+        outline: none;
+        border-color: #f5576c;
+    }
+    
+    .notes-section {
+        margin-bottom: 20px;
+    }
+    
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 10px;
+    }
+    
+    button {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    button:active {
+        transform: scale(0.98);
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+    
+    .clear-btn {
+        background: #e0e0e0;
+        color: #666;
+    }
+    
+    .success {
+        background: #4caf50;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .success.show {
+        display: block;
+    }
+    
+    .error {
+        background: #f44336;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .error.show {
+        display: block;
+    }
+    
+    .hint {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
 </style>
 ```
 
 </head>
 <body>
-<div class="container">
-<h1>💪 Plate Calculator</h1>
-<p class="subtitle">Calculate plates needed for one side of the bar</p>
+    <div class="container">
+        <h1>🏋️ Workout Logger</h1>
+        <div class="subtitle">Log your training session</div>
 
 ```
-<div class="input-group">
-<label for="weight">Target Weight (lbs)</label>
-<input type="number" id="weight" inputmode="decimal" placeholder="225" step="0.25" min="45">
-</div>
-
-<button onclick="calculate()">Calculate</button>
-
-<div id="error" class="error"></div>
-
-<div id="results" class="results">
-<div class="result-header">
-<strong>Target:</strong> <span id="targetWeight"></span> lbs<br>
-<strong>Bar:</strong> 45 lbs<br>
-<strong>Per side:</strong> <span id="perSide"></span> lbs
-</div>
-
-<div class="plates-list" id="platesList">
-<h3>Load (from inside out):</h3>
-<div id="platesContent"></div>
-</div>
-
-<div class="percentages">
-<h3>Training Percentages</h3>
-<div id="percentages"></div>
-</div>
-</div>
+    <div class="date-section">
+        <label for="date">Date</label>
+        <input type="date" id="date">
+    </div>
+    
+    <div class="lift-section">
+        <h3>Squat Section</h3>
+        <div class="lift-row">
+            <div>
+                <label for="squatLift">Lift</label>
+                <select id="squatLift">
+                    <option value="">-- Skip --</option>
+                    <option value="Squat">Squat</option>
+                    <option value="Light Squat">Light Squat</option>
+                    <option value="Volume Squat">Volume Squat</option>
+                </select>
+            </div>
+            <div>
+                <label for="squatData">Sets Reps Weight</label>
+                <input type="text" id="squatData" placeholder="3.5.315" inputmode="decimal">
+                <div class="hint">e.g., 3.5.315</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lift-section">
+        <h3>Press Section</h3>
+        <div class="lift-row">
+            <div>
+                <label for="pressLift">Lift</label>
+                <select id="pressLift">
+                    <option value="">-- Skip --</option>
+                    <option value="Bench">Bench</option>
+                    <option value="Press">Press</option>
+                </select>
+            </div>
+            <div>
+                <label for="pressData">Sets Reps Weight</label>
+                <input type="text" id="pressData" placeholder="4.5.225" inputmode="decimal">
+                <div class="hint">e.g., 4.5.225</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lift-section">
+        <h3>Pull Section</h3>
+        <div class="lift-row">
+            <div>
+                <label for="pullLift">Lift</label>
+                <select id="pullLift">
+                    <option value="">-- Skip --</option>
+                    <option value="Deadlift">Deadlift</option>
+                    <option value="Rack Pull">Rack Pull</option>
+                    <option value="Rows">Rows</option>
+                    <option value="RDL">RDL</option>
+                    <option value="Halting Deadlifts">Halting Deadlifts</option>
+                </select>
+            </div>
+            <div>
+                <label for="pullData">Sets Reps Weight</label>
+                <input type="text" id="pullData" placeholder="1.5.405" inputmode="decimal">
+                <div class="hint">e.g., 1.5.405</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lift-section">
+        <h3>Accessories</h3>
+        <div class="lift-row">
+            <div>
+                <label for="accessoryLift">Lift</label>
+                <select id="accessoryLift">
+                    <option value="">-- Skip --</option>
+                    <option value="Lat Pulldowns">Lat Pulldowns</option>
+                    <option value="Curls">Curls</option>
+                    <option value="Chins">Chins</option>
+                    <option value="Negative Chins">Negative Chins</option>
+                    <option value="Prowler">Prowler</option>
+                </select>
+            </div>
+            <div>
+                <label for="accessoryData">Sets Reps Weight</label>
+                <input type="text" id="accessoryData" placeholder="3.10.135" inputmode="decimal">
+                <div class="hint">e.g., 3.10.135</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notes-section">
+        <label for="notes">Notes (Optional)</label>
+        <textarea id="notes" placeholder="How did the workout feel?"></textarea>
+    </div>
+    
+    <div class="button-group">
+        <button class="clear-btn" onclick="clearForm()">Clear</button>
+        <button class="submit-btn" onclick="submitWorkout()">Submit Workout</button>
+    </div>
+    
+    <div id="success" class="success"></div>
+    <div id="error" class="error"></div>
 </div>
 
 <script>
-const availablePlates = {
-45: 4,
-25: 1,
-10: 2,
-5: 1,
-2.5: 1,
-1: 1,
-0.25: 1
-};
-
-const barWeight = 45;
-
-function calculate() {
-const input = document.getElementById('weight');
-const targetWeight = parseFloat(input.value);
-const errorDiv = document.getElementById('error');
-const resultsDiv = document.getElementById('results');
-
-errorDiv.textContent = '';
-
-if (isNaN(targetWeight) || targetWeight < barWeight) {
-errorDiv.textContent = 'Please enter a valid weight greater than 45 lbs';
-resultsDiv.classList.remove('show');
-return;
-}
-
-const weightPerSide = (targetWeight - barWeight) / 2;
-
-let platesNeeded = [];
-let remainingWeight = weightPerSide;
-const plateWeights = [45, 25, 10, 5, 2.5, 1, 0.25];
-
-for (let weight of plateWeights) {
-let count = 0;
-while (remainingWeight >= weight && count < availablePlates[weight]) {
-count++;
-remainingWeight -= weight;
-remainingWeight = Math.round(remainingWeight * 100) / 100;
-}
-if (count > 0) {
-platesNeeded.push({ weight: weight, count: count });
-}
-}
-
-const actualWeight = barWeight + (weightPerSide - remainingWeight) * 2;
-
-document.getElementById('targetWeight').textContent = targetWeight;
-document.getElementById('perSide').textContent = weightPerSide;
-
-const platesContent = document.getElementById('platesContent');
-if (platesNeeded.length === 0) {
-platesContent.innerHTML = '<div class="plate-item">Just the bar!</div>';
-} else {
-platesContent.innerHTML = platesNeeded.map(plate => 
-`<div class="plate-item">${plate.count}x ${plate.weight} lb</div>`
-).join('');
-}
-
-const percentages = [90, 85, 80];
-const percentagesDiv = document.getElementById('percentages');
-percentagesDiv.innerHTML = percentages.map(pct => {
-const pctWeight = Math.round((actualWeight * pct / 100) * 2) / 2;
-return `<div class="pct-item">
-<span class="pct-label">${pct}%:</span>
-<span class="pct-value">${pctWeight} lbs</span>
-</div>`;
-}).join('');
-
-resultsDiv.classList.add('show');
-}
-
-document.getElementById('weight').addEventListener('keypress', function(e) {
-if (e.key === 'Enter') {
-calculate();
-}
-});
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+    
+    // YOUR WEBHOOK URL GOES HERE
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzypvKHJs8PGt7NUtvbR5gV0rNlE3oSAfSRAUFVHnj3cYez7oOU-ahdeLzVgUE3YGG0/exec';
+    
+    function parseData(dataString) {
+        if (!dataString.trim()) return null;
+        const parts = dataString.trim().split('.');
+        if (parts.length !== 3) return null;
+        return {
+            sets: parts[0],
+            reps: parts[1],
+            weight: parts[2]
+        };
+    }
+    
+    async function submitWorkout() {
+        const date = document.getElementById('date').value;
+        
+        if (!date) {
+            showError('Please select a date');
+            return;
+        }
+        
+        const workout = {
+            date: date,
+            squat: {
+                lift: document.getElementById('squatLift').value,
+                data: parseData(document.getElementById('squatData').value)
+            },
+            press: {
+                lift: document.getElementById('pressLift').value,
+                data: parseData(document.getElementById('pressData').value)
+            },
+            pull: {
+                lift: document.getElementById('pullLift').value,
+                data: parseData(document.getElementById('pullData').value)
+            },
+            accessory: {
+                lift: document.getElementById('accessoryLift').value,
+                data: parseData(document.getElementById('accessoryData').value)
+            },
+            notes: document.getElementById('notes').value
+        };
+        
+        // Check if at least one lift is entered
+        const hasData = workout.squat.lift || workout.press.lift || workout.pull.lift || workout.accessory.lift;
+        if (!hasData) {
+            showError('Please enter at least one lift');
+            return;
+        }
+        
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(workout)
+            });
+            
+            showSuccess('Workout logged successfully!');
+            clearForm();
+        } catch (error) {
+            showError('Error logging workout. Please try again.');
+            console.error('Error:', error);
+        }
+    }
+    
+    function clearForm() {
+        document.getElementById('squatLift').value = '';
+        document.getElementById('squatData').value = '';
+        document.getElementById('pressLift').value = '';
+        document.getElementById('pressData').value = '';
+        document.getElementById('pullLift').value = '';
+        document.getElementById('pullData').value = '';
+        document.getElementById('accessoryLift').value = '';
+        document.getElementById('accessoryData').value = '';
+        document.getElementById('notes').value = '';
+        hideMessages();
+    }
+    
+    function showSuccess(message) {
+        const successDiv = document.getElementById('success');
+        successDiv.textContent = message;
+        successDiv.classList.add('show');
+        document.getElementById('error').classList.remove('show');
+        setTimeout(() => successDiv.classList.remove('show'), 5000);
+    }
+    
+    function showError(message) {
+        const errorDiv = document.getElementById('error');
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+        document.getElementById('success').classList.remove('show');
+    }
+    
+    function hideMessages() {
+        document.getElementById('success').classList.remove('show');
+        document.getElementById('error').classList.remove('show');
+    }
 </script>
 ```
 
