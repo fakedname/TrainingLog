@@ -132,23 +132,6 @@
         }
     }
     
-    .lift-entry {
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-    
-    .lift-entry:last-of-type {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-    
-    @media (prefers-color-scheme: dark) {
-        .lift-entry {
-            border-bottom-color: #444;
-        }
-    }
-    
     .lift-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -200,45 +183,6 @@
     textarea {
         resize: vertical;
         min-height: 80px;
-    }
-    
-    .add-set-btn {
-        width: 100%;
-        padding: 10px;
-        background: #e0e0e0;
-        color: #666;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    
-    @media (prefers-color-scheme: dark) {
-        .add-set-btn {
-            background: #3a3a3a;
-            color: #ccc;
-        }
-    }
-    
-    .add-set-btn:active {
-        transform: scale(0.98);
-    }
-    
-    .remove-set-btn {
-        padding: 8px 12px;
-        background: #ff6b6b;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 12px;
-        cursor: pointer;
-        margin-top: 5px;
-    }
-    
-    .remove-set-btn:active {
-        transform: scale(0.98);
     }
     
     .button-group {
@@ -345,28 +289,72 @@
             <input type="date" id="date">
         </div>
         
-        <div class="lift-section" id="squatSection">
+        <div class="lift-section">
             <h3>Squat Section</h3>
-            <div id="squatEntries"></div>
-            <button class="add-set-btn" onclick="addSquatSet()">+ Add Another Squat Set</button>
+            <div class="lift-row">
+                <div>
+                    <label for="squatLift">Lift</label>
+                    <select id="squatLift">
+                        <option value="">-- Skip --</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="squatData">Sets.Reps.Weight</label>
+                    <input type="text" id="squatData" placeholder="3.5.315" inputmode="decimal">
+                    <div class="hint">e.g., 3.5.315</div>
+                </div>
+            </div>
         </div>
         
-        <div class="lift-section" id="pressSection">
+        <div class="lift-section">
             <h3>Press Section</h3>
-            <div id="pressEntries"></div>
-            <button class="add-set-btn" onclick="addPressSet()">+ Add Another Press Set</button>
+            <div class="lift-row">
+                <div>
+                    <label for="pressLift">Lift</label>
+                    <select id="pressLift">
+                        <option value="">-- Skip --</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="pressData">Sets.Reps.Weight</label>
+                    <input type="text" id="pressData" placeholder="4.5.225" inputmode="decimal">
+                    <div class="hint">e.g., 4.5.225</div>
+                </div>
+            </div>
         </div>
         
-        <div class="lift-section" id="pullSection">
+        <div class="lift-section">
             <h3>Pull Section</h3>
-            <div id="pullEntries"></div>
-            <button class="add-set-btn" onclick="addPullSet()">+ Add Another Pull Set</button>
+            <div class="lift-row">
+                <div>
+                    <label for="pullLift">Lift</label>
+                    <select id="pullLift">
+                        <option value="">-- Skip --</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="pullData">Sets.Reps.Weight</label>
+                    <input type="text" id="pullData" placeholder="1.5.405" inputmode="decimal">
+                    <div class="hint">e.g., 1.5.405</div>
+                </div>
+            </div>
         </div>
         
-        <div class="lift-section" id="accessorySection">
+        <div class="lift-section">
             <h3>Accessories</h3>
-            <div id="accessoryEntries"></div>
-            <button class="add-set-btn" onclick="addAccessorySet()">+ Add Another Accessory Set</button>
+            <div class="lift-row">
+                <div>
+                    <label for="accessoryLift">Lift</label>
+                    <select id="accessoryLift">
+                        <option value="">-- Skip --</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="accessoryData">Sets.Reps.Weight</label>
+                    <input type="text" id="accessoryData" placeholder="3.10.135" inputmode="decimal">
+                    <div class="hint">e.g., 3.10.135</div>
+                </div>
+            </div>
         </div>
         
         <div class="notes-section">
@@ -387,18 +375,6 @@
 <script>
     const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzypvKHJs8PGt7NUtvbR5gV0rNlE3oSAfSRAUFVHnj3cYez7oOU-ahdeLzVgUE3YGG0/exec';
     
-    let liftLists = {
-        squat: [],
-        upper: [],
-        pull: [],
-        accessory: []
-    };
-    
-    let squatCounter = 0;
-    let pressCounter = 0;
-    let pullCounter = 0;
-    let accessoryCounter = 0;
-    
     // Set today's date
     const today = new Date();
     const year = today.getFullYear();
@@ -409,163 +385,31 @@
     async function loadLifts() {
         try {
             const response = await fetch(WEBHOOK_URL);
-            liftLists = await response.json();
+            const liftLists = await response.json();
+            
+            // Populate dropdowns
+            populateDropdown('squatLift', liftLists.squat);
+            populateDropdown('pressLift', liftLists.upper);
+            populateDropdown('pullLift', liftLists.pull);
+            populateDropdown('accessoryLift', liftLists.accessory);
             
             document.getElementById('loading').style.display = 'none';
             document.getElementById('form').style.display = 'block';
             document.getElementById('date').value = `${year}-${month}-${day}`;
-            
-            // Add initial entries
-            addSquatSet();
-            addPressSet();
-            addPullSet();
-            addAccessorySet();
         } catch (error) {
             document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
             console.error('Error loading lifts:', error);
         }
     }
     
-    function createLiftEntry(type, id, lifts) {
-        const canRemove = (type === 'squat' && squatCounter > 1) ||
-                        (type === 'press' && pressCounter > 1) ||
-                        (type === 'pull' && pullCounter > 1) ||
-                        (type === 'accessory' && accessoryCounter > 1);
-        
-        const categoryMap = {
-            'squat': 'squat',
-            'press': 'upper',
-            'pull': 'pull',
-            'accessory': 'accessory'
-        };
-        
-        return `
-            <div class="lift-entry" id="${type}-entry-${id}">
-                <div class="lift-row">
-                    <div>
-                        <label for="${type}-lift-${id}">Lift</label>
-                        <select id="${type}-lift-${id}" onchange="handleLiftChange('${type}', ${id}, '${categoryMap[type]}')">
-                            <option value="">-- Skip --</option>
-                            <option value="__ADD_NEW__">➕ Add New Lift</option>
-                            ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label for="${type}-data-${id}">Sets.Reps.Weight</label>
-                        <input type="text" id="${type}-data-${id}" placeholder="3.5.315" inputmode="decimal">
-                        <div class="hint">e.g., 3.5.315</div>
-                    </div>
-                </div>
-                ${canRemove ? `<button class="remove-set-btn" onclick="removeSet('${type}', ${id})">Remove This Set</button>` : ''}
-            </div>
-        `;
-    }
-    
-    async function handleLiftChange(type, id, category) {
-        const selectEl = document.getElementById(`${type}-lift-${id}`);
-        
-        if (selectEl.value === '__ADD_NEW__') {
-            const liftName = prompt('Enter new lift name:');
-            
-            if (liftName && liftName.trim()) {
-                try {
-                    const response = await fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'addLift',
-                            category: category,
-                            liftName: liftName.trim()
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Add to local list
-                        if (category === 'squat') liftLists.squat.push(liftName.trim());
-                        else if (category === 'upper') liftLists.upper.push(liftName.trim());
-                        else if (category === 'pull') liftLists.pull.push(liftName.trim());
-                        else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
-                        
-                        // Refresh all dropdowns of this type
-                        refreshDropdowns(type);
-                        
-                        // Select the new lift
-                        selectEl.value = liftName.trim();
-                        
-                        showSuccess(`Added "${liftName.trim()}" to your lift list!`);
-                    }
-                } catch (error) {
-                    // Still add it locally even if save fails
-                    if (category === 'squat') liftLists.squat.push(liftName.trim());
-                    else if (category === 'upper') liftLists.upper.push(liftName.trim());
-                    else if (category === 'pull') liftLists.pull.push(liftName.trim());
-                    else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
-                    
-                    refreshDropdowns(type);
-                    selectEl.value = liftName.trim();
-                    showSuccess(`Added "${liftName.trim()}" (saved locally)`);
-                }
-            } else {
-                selectEl.value = '';
-            }
-        }
-    }
-    
-    function refreshDropdowns(type) {
-        const typeMap = {
-            'squat': liftLists.squat,
-            'press': liftLists.upper,
-            'pull': liftLists.pull,
-            'accessory': liftLists.accessory
-        };
-        
-        const lifts = typeMap[type];
-        const selects = document.querySelectorAll(`select[id^="${type}-lift-"]`);
-        
-        selects.forEach(select => {
-            const currentValue = select.value;
-            select.innerHTML = `
-                <option value="">-- Skip --</option>
-                <option value="__ADD_NEW__">➕ Add New Lift</option>
-                ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
-            `;
-            if (currentValue && currentValue !== '__ADD_NEW__') {
-                select.value = currentValue;
-            }
+    function populateDropdown(id, lifts) {
+        const select = document.getElementById(id);
+        lifts.forEach(lift => {
+            const option = document.createElement('option');
+            option.value = lift;
+            option.textContent = lift;
+            select.appendChild(option);
         });
-    }
-    
-    function addSquatSet() {
-        squatCounter++;
-        const container = document.getElementById('squatEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('squat', squatCounter, liftLists.squat));
-    }
-    
-    function addPressSet() {
-        pressCounter++;
-        const container = document.getElementById('pressEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('press', pressCounter, liftLists.upper));
-    }
-    
-    function addPullSet() {
-        pullCounter++;
-        const container = document.getElementById('pullEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('pull', pullCounter, liftLists.pull));
-    }
-    
-    function addAccessorySet() {
-        accessoryCounter++;
-        const container = document.getElementById('accessoryEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('accessory', accessoryCounter, liftLists.accessory));
-    }
-    
-    function removeSet(type, id) {
-        const entry = document.getElementById(`${type}-entry-${id}`);
-        if (entry) entry.remove();
     }
     
     function parseData(dataString) {
@@ -587,76 +431,32 @@
             return;
         }
         
-        const entries = [];
+        const workout = {
+            date: date,
+            squat: {
+                lift: document.getElementById('squatLift').value,
+                data: parseData(document.getElementById('squatData').value)
+            },
+            press: {
+                lift: document.getElementById('pressLift').value,
+                data: parseData(document.getElementById('pressData').value)
+            },
+            pull: {
+                lift: document.getElementById('pullLift').value,
+                data: parseData(document.getElementById('pullData').value)
+            },
+            accessory: {
+                lift: document.getElementById('accessoryLift').value,
+                data: parseData(document.getElementById('accessoryData').value)
+            },
+            notes: document.getElementById('notes').value
+        };
         
-        // Collect all squat entries
-        for (let i = 1; i <= squatCounter; i++) {
-            const liftEl = document.getElementById(`squat-lift-${i}`);
-            const dataEl = document.getElementById(`squat-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    squat: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
-            }
-        }
-        
-        // Collect all press entries
-        for (let i = 1; i <= pressCounter; i++) {
-            const liftEl = document.getElementById(`press-lift-${i}`);
-            const dataEl = document.getElementById(`press-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    press: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
-            }
-        }
-        
-        // Collect all pull entries
-        for (let i = 1; i <= pullCounter; i++) {
-            const liftEl = document.getElementById(`pull-lift-${i}`);
-            const dataEl = document.getElementById(`pull-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    pull: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
-            }
-        }
-        
-        // Collect all accessory entries
-        for (let i = 1; i <= accessoryCounter; i++) {
-            const liftEl = document.getElementById(`accessory-lift-${i}`);
-            const dataEl = document.getElementById(`accessory-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    accessory: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
-            }
-        }
-        
-        if (entries.length === 0) {
+        // Check if at least one lift is entered
+        const hasData = workout.squat.lift || workout.press.lift || workout.pull.lift || workout.accessory.lift;
+        if (!hasData) {
             showError('Please enter at least one lift');
             return;
-        }
-        
-        // Add notes to first entry only
-        if (document.getElementById('notes').value) {
-            entries[0].notes = document.getElementById('notes').value;
         }
         
         try {
@@ -665,7 +465,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ entries: entries })
+                body: JSON.stringify(workout)
             });
             
             showSuccess('Workout logged successfully!');
@@ -677,22 +477,15 @@
     }
     
     function clearForm() {
-        document.getElementById('squatEntries').innerHTML = '';
-        document.getElementById('pressEntries').innerHTML = '';
-        document.getElementById('pullEntries').innerHTML = '';
-        document.getElementById('accessoryEntries').innerHTML = '';
+        document.getElementById('squatLift').value = '';
+        document.getElementById('squatData').value = '';
+        document.getElementById('pressLift').value = '';
+        document.getElementById('pressData').value = '';
+        document.getElementById('pullLift').value = '';
+        document.getElementById('pullData').value = '';
+        document.getElementById('accessoryLift').value = '';
+        document.getElementById('accessoryData').value = '';
         document.getElementById('notes').value = '';
-        
-        squatCounter = 0;
-        pressCounter = 0;
-        pullCounter = 0;
-        accessoryCounter = 0;
-        
-        addSquatSet();
-        addPressSet();
-        addPullSet();
-        addAccessorySet();
-        
         hideMessages();
     }
     
