@@ -569,11 +569,14 @@
     function parseData(dataString) {
         if (!dataString.trim()) return null;
         const parts = dataString.trim().split('.');
-        if (parts.length !== 3) return null;
+        if (parts.length < 3) return null;
+        
+        // First two parts are sets and reps
+        // Everything after is the weight (handles decimals like 312.5)
         return {
             sets: parts[0],
             reps: parts[1],
-            weight: parts[2]
+            weight: parts.slice(2).join('.')
         };
     }
     
