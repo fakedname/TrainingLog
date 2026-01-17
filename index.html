@@ -18,6 +18,13 @@
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         min-height: 100vh;
         padding: 20px;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
     }
     
     .container {
@@ -27,12 +34,26 @@
         max-width: 600px;
         margin: 0 auto;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        -webkit-transform: translateZ(0);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .container {
+            background: #1e1e1e;
+            color: #ffffff;
+        }
     }
     
     h1 {
         color: #333;
         margin-bottom: 10px;
         font-size: 28px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        h1 {
+            color: #ffffff;
+        }
     }
     
     .subtitle {
@@ -48,6 +69,12 @@
         margin-bottom: 25px;
     }
     
+    @media (prefers-color-scheme: dark) {
+        .date-section {
+            background: #2a2a2a;
+        }
+    }
+    
     .date-section label {
         display: block;
         margin-bottom: 8px;
@@ -61,6 +88,17 @@
         font-size: 16px;
         border: 2px solid #ddd;
         border-radius: 8px;
+        background: white;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        input[type="date"] {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #ffffff;
+            color-scheme: dark;
+        }
     }
     
     .lift-section {
@@ -68,6 +106,12 @@
         padding: 20px;
         border-radius: 10px;
         margin-bottom: 20px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .lift-section {
+            background: #2a2a2a;
+        }
     }
     
     .lift-section h3 {
@@ -98,6 +142,15 @@
         border: 2px solid #ddd;
         border-radius: 8px;
         background: white;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        select, input[type="text"], textarea {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #ffffff;
+        }
     }
     
     select:focus, input:focus, textarea:focus {
