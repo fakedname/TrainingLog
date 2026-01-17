@@ -433,13 +433,21 @@
                         (type === 'pull' && pullCounter > 1) ||
                         (type === 'accessory' && accessoryCounter > 1);
         
+        const categoryMap = {
+            'squat': 'squat',
+            'press': 'upper',
+            'pull': 'pull',
+            'accessory': 'accessory'
+        };
+        
         return `
             <div class="lift-entry" id="${type}-entry-${id}">
                 <div class="lift-row">
                     <div>
                         <label for="${type}-lift-${id}">Lift</label>
-                        <select id="${type}-lift-${id}">
+                        <select id="${type}-lift-${id}" onchange="handleLiftChange('${type}', ${id}, '${categoryMap[type]}')">
                             <option value="">-- Skip --</option>
+                            <option value="__ADD_NEW__">➕ Add New Lift</option>
                             ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
                         </select>
                     </div>
@@ -452,6 +460,81 @@
                 ${canRemove ? `<button class="remove-set-btn" onclick="removeSet('${type}', ${id})">Remove This Set</button>` : ''}
             </div>
         `;
+    }
+    
+    async function handleLiftChange(type, id, category) {
+        const selectEl = document.getElementById(`${type}-lift-${id}`);
+        
+        if (selectEl.value === '__ADD_NEW__') {
+            const liftName = prompt('Enter new lift name:');
+            
+            if (liftName && liftName.trim()) {
+                try {
+                    await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'addLift',
+                            category: category,
+                            liftName: liftName.trim()
+                        })
+                    });
+                    
+                    // Add to local list
+                    if (category === 'squat') liftLists.squat.push(liftName.trim());
+                    else if (category === 'upper') liftLists.upper.push(liftName.trim());
+                    else if (category === 'pull') liftLists.pull.push(liftName.trim());
+                    else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
+                    
+                    // Refresh all dropdowns of this type
+                    refreshDropdowns(type);
+                    
+                    // Select the new lift
+                    selectEl.value = liftName.trim();
+                    
+                    showSuccess(`Added "${liftName.trim()}" to your lift list!`);
+                } catch (error) {
+                    // Still add it locally even if save fails
+                    if (category === 'squat') liftLists.squat.push(liftName.trim());
+                    else if (category === 'upper') liftLists.upper.push(liftName.trim());
+                    else if (category === 'pull') liftLists.pull.push(liftName.trim());
+                    else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
+                    
+                    refreshDropdowns(type);
+                    selectEl.value = liftName.trim();
+                    showSuccess(`Added "${liftName.trim()}"`);
+                }
+            } else {
+                selectEl.value = '';
+            }
+        }
+    }
+    
+    function refreshDropdowns(type) {
+        const typeMap = {
+            'squat': liftLists.squat,
+            'press': liftLists.upper,
+            'pull': liftLists.pull,
+            'accessory': liftLists.accessory
+        };
+        
+        const lifts = typeMap[type];
+        const selects = document.querySelectorAll(`select[id^="${type}-lift-"]`);
+        
+        selects.forEach(select => {
+            const currentValue = select.value;
+            select.innerHTML = `
+                <option value="">-- Skip --</option>
+                <option value="__ADD_NEW__">➕ Add New Lift</option>
+                ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
+            `;
+            if (currentValue && currentValue !== '__ADD_NEW__') {
+                select.value = currentValue;
+            }
+        });
     }
     
     function addSquatSet() {
@@ -502,76 +585,67 @@
             return;
         }
         
+        // Collect all lifts grouped by their entry number
+        const maxEntries = Math.max(squatCounter, pressCounter, pullCounter, accessoryCounter);
         const entries = [];
         
-        // Collect all squat entries
-        for (let i = 1; i <= squatCounter; i++) {
-            const liftEl = document.getElementById(`squat-lift-${i}`);
-            const dataEl = document.getElementById(`squat-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    squat: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
+        for (let entryNum = 1; entryNum <= maxEntries; entryNum++) {
+            const entry = { date: date };
+            
+            // Check for squat at this position
+            const squatLift = document.getElementById(`squat-lift-${entryNum}`);
+            const squatData = document.getElementById(`squat-data-${entryNum}`);
+            if (squatLift && squatLift.value) {
+                entry.squat = {
+                    lift: squatLift.value,
+                    data: parseData(squatData.value)
+                };
             }
-        }
-        
-        // Collect all press entries
-        for (let i = 1; i <= pressCounter; i++) {
-            const liftEl = document.getElementById(`press-lift-${i}`);
-            const dataEl = document.getElementById(`press-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    press: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
+            
+            // Check for press at this position
+            const pressLift = document.getElementById(`press-lift-${entryNum}`);
+            const pressData = document.getElementById(`press-data-${entryNum}`);
+            if (pressLift && pressLift.value) {
+                entry.press = {
+                    lift: pressLift.value,
+                    data: parseData(pressData.value)
+                };
             }
-        }
-        
-        // Collect all pull entries
-        for (let i = 1; i <= pullCounter; i++) {
-            const liftEl = document.getElementById(`pull-lift-${i}`);
-            const dataEl = document.getElementById(`pull-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    pull: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
+            
+            // Check for pull at this position
+            const pullLift = document.getElementById(`pull-lift-${entryNum}`);
+            const pullData = document.getElementById(`pull-data-${entryNum}`);
+            if (pullLift && pullLift.value) {
+                entry.pull = {
+                    lift: pullLift.value,
+                    data: parseData(pullData.value)
+                };
             }
-        }
-        
-        // Collect all accessory entries
-        for (let i = 1; i <= accessoryCounter; i++) {
-            const liftEl = document.getElementById(`accessory-lift-${i}`);
-            const dataEl = document.getElementById(`accessory-data-${i}`);
-            if (liftEl && dataEl && liftEl.value) {
-                entries.push({
-                    date: date,
-                    accessory: {
-                        lift: liftEl.value,
-                        data: parseData(dataEl.value)
-                    }
-                });
+            
+            // Check for accessory at this position
+            const accLift = document.getElementById(`accessory-lift-${entryNum}`);
+            const accData = document.getElementById(`accessory-data-${entryNum}`);
+            if (accLift && accLift.value) {
+                entry.accessory = {
+                    lift: accLift.value,
+                    data: parseData(accData.value)
+                };
+            }
+            
+            // Add notes to first entry only
+            if (entryNum === 1 && document.getElementById('notes').value) {
+                entry.notes = document.getElementById('notes').value;
+            }
+            
+            // Only add this entry if it has at least one lift
+            if (entry.squat || entry.press || entry.pull || entry.accessory) {
+                entries.push(entry);
             }
         }
         
         if (entries.length === 0) {
             showError('Please enter at least one lift');
             return;
-        }
-        
-        // Add notes to first entry only
-        if (document.getElementById('notes').value) {
-            entries[0].notes = document.getElementById('notes').value;
         }
         
         try {
@@ -584,7 +658,6 @@
                 body: JSON.stringify({ entries: entries })
             });
             
-            // With no-cors, we can't read the response, so always show success
             showSuccess('Workout logged successfully!');
             clearForm();
         } catch (error) {
