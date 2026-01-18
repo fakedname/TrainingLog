@@ -122,6 +122,55 @@
         display: block;
     }
     
+    .existing-entry-preview {
+        background: #e3f2fd;
+        border: 2px solid #2196f3;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+    }
+    
+    .existing-entry-preview.show {
+        display: block;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .existing-entry-preview {
+            background: #1a237e;
+            border-color: #64b5f6;
+        }
+    }
+    
+    .existing-entry-preview h4 {
+        margin-bottom: 10px;
+        color: #1976d2;
+        font-size: 16px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .existing-entry-preview h4 {
+            color: #64b5f6;
+        }
+    }
+    
+    .existing-entry-preview .entry-summary {
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .existing-entry-preview .button-row {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .existing-entry-preview button {
+        flex: 1;
+        padding: 10px;
+        font-size: 14px;
+    }
+    
     .lift-section {
         background: #f8f9fa;
         padding: 20px;
@@ -362,7 +411,16 @@
         </div>
         
         <div id="editNotice" class="edit-mode-notice">
-            ✏️ Editing existing workout - changes will update the original entry
+            ✏️ Editing mode - changes will update the original entry
+        </div>
+        
+        <div id="existingPreview" class="existing-entry-preview">
+            <h4>📋 Existing Entry Found</h4>
+            <div id="previewContent" class="entry-summary"></div>
+            <div class="button-row">
+                <button onclick="loadForEditing()" style="background: #2196f3; color: white;">Edit Entry</button>
+                <button onclick="createNewEntry()" style="background: #4caf50; color: white;">New Entry</button>
+            </div>
         </div>
         
         <div class="lift-section">
@@ -420,6 +478,7 @@
     let accessoryCounter = 0;
     let editMode = false;
     let editingDate = null;
+    let cachedExistingData = null;
     
     // Set today's date
     const today = new Date();
@@ -452,29 +511,79 @@
         const selectedDate = document.getElementById('date').value;
         if (!selectedDate) return;
         
+        console.log('Checking for existing workout on:', selectedDate);
+        
         try {
-            const response = await fetch(`${WEBHOOK_URL}?action=getWorkout&date=${selectedDate}`);
+            const url = `${WEBHOOK_URL}?action=getWorkout&date=${selectedDate}`;
+            console.log('Fetching:', url);
+            
+            const response = await fetch(url);
+            console.log('Response status:', response.status);
+            
             const result = await response.json();
+            console.log('Result:', result);
             
             if (result.found && result.entries && result.entries.length > 0) {
-                // Load existing workout
-                editMode = true;
-                editingDate = selectedDate;
-                document.getElementById('editNotice').classList.add('show');
-                loadExistingWorkout(result.entries);
+                // Show preview
+                cachedExistingData = result.entries;
+                showExistingPreview(result.entries);
             } else {
                 // New workout
+                console.log('No existing workout found');
+                hideExistingPreview();
                 editMode = false;
                 editingDate = null;
-                document.getElementById('editNotice').classList.remove('show');
                 clearForm(false);
             }
         } catch (error) {
             console.error('Error checking existing workout:', error);
+            hideExistingPreview();
             editMode = false;
             editingDate = null;
-            document.getElementById('editNotice').classList.remove('show');
+            showError('Error checking for existing workout: ' + error.message);
         }
+    }
+    
+    function showExistingPreview(entries) {
+        let summary = '';
+        
+        entries.forEach((entry, index) => {
+            if (index > 0) summary += '<br>';
+            const lifts = [];
+            if (entry.squat) lifts.push(`Squat: ${entry.squat.data.sets}.${entry.squat.data.reps}.${entry.squat.data.weight}`);
+            if (entry.press) lifts.push(`Press: ${entry.press.data.sets}.${entry.press.data.reps}.${entry.press.data.weight}`);
+            if (entry.pull) lifts.push(`Pull: ${entry.pull.data.sets}.${entry.pull.data.reps}.${entry.pull.data.weight}`);
+            if (entry.accessory) lifts.push(`Accessory: ${entry.accessory.data.sets}.${entry.accessory.data.reps}.${entry.accessory.data.weight}`);
+            summary += lifts.join(' | ');
+        });
+        
+        document.getElementById('previewContent').innerHTML = summary;
+        document.getElementById('existingPreview').classList.add('show');
+        document.getElementById('editNotice').classList.remove('show');
+    }
+    
+    function hideExistingPreview() {
+        document.getElementById('existingPreview').classList.remove('show');
+        document.getElementById('editNotice').classList.remove('show');
+        cachedExistingData = null;
+    }
+    
+    function loadForEditing() {
+        if (cachedExistingData) {
+            editMode = true;
+            editingDate = document.getElementById('date').value;
+            document.getElementById('existingPreview').classList.remove('show');
+            document.getElementById('editNotice').classList.add('show');
+            loadExistingWorkout(cachedExistingData);
+        }
+    }
+    
+    function createNewEntry() {
+        editMode = false;
+        editingDate = null;
+        cachedExistingData = null;
+        hideExistingPreview();
+        clearForm(false);
     }
     
     function loadExistingWorkout(entries) {
