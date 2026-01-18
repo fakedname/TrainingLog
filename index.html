@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Log</title>
+    <title>Workout Logger</title>
     <style>
         * {
             margin: 0;
@@ -105,6 +105,21 @@
             color: #ffffff;
             color-scheme: dark;
         }
+    }
+    
+    .edit-mode-notice {
+        background: #ffc107;
+        color: #000;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+        display: none;
+    }
+    
+    .edit-mode-notice.show {
+        display: block;
     }
     
     .lift-section {
@@ -338,12 +353,16 @@
 
 ```
     <div id="form" style="display: none;">
-        <h1>🏋️ Training Log</h1>
+        <h1>🏋️ Workout Logger</h1>
         <div class="subtitle">Log your training session</div>
         
         <div class="date-section">
             <label for="date">Date</label>
-            <input type="date" id="date">
+            <input type="date" id="date" onchange="checkExistingWorkout()">
+        </div>
+        
+        <div id="editNotice" class="edit-mode-notice">
+            ✏️ Editing existing workout - changes will update the original entry
         </div>
         
         <div class="lift-section">
@@ -399,6 +418,8 @@
     let pressCounter = 0;
     let pullCounter = 0;
     let accessoryCounter = 0;
+    let editMode = false;
+    let editingDate = null;
     
     // Set today's date
     const today = new Date();
@@ -425,6 +446,98 @@
             document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
             console.error('Error loading lifts:', error);
         }
+    }
+    
+    async function checkExistingWorkout() {
+        const selectedDate = document.getElementById('date').value;
+        if (!selectedDate) return;
+        
+        try {
+            const response = await fetch(`${WEBHOOK_URL}?action=getWorkout&date=${selectedDate}`);
+            const result = await response.json();
+            
+            if (result.found && result.entries && result.entries.length > 0) {
+                // Load existing workout
+                editMode = true;
+                editingDate = selectedDate;
+                document.getElementById('editNotice').classList.add('show');
+                loadExistingWorkout(result.entries);
+            } else {
+                // New workout
+                editMode = false;
+                editingDate = null;
+                document.getElementById('editNotice').classList.remove('show');
+                clearForm(false);
+            }
+        } catch (error) {
+            console.error('Error checking existing workout:', error);
+            editMode = false;
+            editingDate = null;
+            document.getElementById('editNotice').classList.remove('show');
+        }
+    }
+    
+    function loadExistingWorkout(entries) {
+        clearForm(false);
+        
+        entries.forEach((entry, index) => {
+            // Load squat
+            if (entry.squat) {
+                if (index >= squatCounter) addSquatSet();
+                const liftEl = document.getElementById(`squat-lift-${index + 1}`);
+                const dataEl = document.getElementById(`squat-data-${index + 1}`);
+                if (liftEl && dataEl) {
+                    liftEl.value = entry.squat.lift;
+                    if (entry.squat.data) {
+                        dataEl.value = `${entry.squat.data.sets}.${entry.squat.data.reps}.${entry.squat.data.weight}`;
+                    }
+                }
+            }
+            
+            // Load press
+            if (entry.press) {
+                if (index >= pressCounter) addPressSet();
+                const liftEl = document.getElementById(`press-lift-${index + 1}`);
+                const dataEl = document.getElementById(`press-data-${index + 1}`);
+                if (liftEl && dataEl) {
+                    liftEl.value = entry.press.lift;
+                    if (entry.press.data) {
+                        dataEl.value = `${entry.press.data.sets}.${entry.press.data.reps}.${entry.press.data.weight}`;
+                    }
+                }
+            }
+            
+            // Load pull
+            if (entry.pull) {
+                if (index >= pullCounter) addPullSet();
+                const liftEl = document.getElementById(`pull-lift-${index + 1}`);
+                const dataEl = document.getElementById(`pull-data-${index + 1}`);
+                if (liftEl && dataEl) {
+                    liftEl.value = entry.pull.lift;
+                    if (entry.pull.data) {
+                        dataEl.value = `${entry.pull.data.sets}.${entry.pull.data.reps}.${entry.pull.data.weight}`;
+                    }
+                }
+            }
+            
+            // Load accessory
+            if (entry.accessory) {
+                if (index >= accessoryCounter) addAccessorySet();
+                const liftEl = document.getElementById(`accessory-lift-${index + 1}`);
+                const dataEl = document.getElementById(`accessory-data-${index + 1}`);
+                if (liftEl && dataEl) {
+                    liftEl.value = entry.accessory.lift;
+                    if (entry.accessory.data) {
+                        dataEl.value = `${entry.accessory.data.sets}.${entry.accessory.data.reps}.${entry.accessory.data.weight}`;
+                    }
+                }
+            }
+            
+            // Load notes (only from first entry)
+            if (index === 0 && entry.notes) {
+                document.getElementById('notes').value = entry.notes;
+            }
+        });
     }
     
     function createLiftEntry(type, id, lifts) {
@@ -472,9 +585,8 @@
                 try {
                     await fetch(WEBHOOK_URL, {
                         method: 'POST',
-                        mode: 'no-cors',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain',
                         },
                         body: JSON.stringify({
                             action: 'addLift',
@@ -651,25 +763,41 @@
             return;
         }
         
+        const payload = { entries: entries };
+        if (editMode && editingDate) {
+            payload.dateToUpdate = editingDate;
+        }
+        
         try {
-            await fetch(WEBHOOK_URL, {
+            const response = await fetch(WEBHOOK_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                 },
-                body: JSON.stringify({ entries: entries })
+                body: JSON.stringify(payload)
             });
             
-            showSuccess('Workout logged successfully!');
-            clearForm();
+            const result = await response.json();
+            
+            if (result.success) {
+                showSuccess(editMode ? 'Workout updated successfully!' : 'Workout logged successfully!');
+                editMode = false;
+                editingDate = null;
+                document.getElementById('editNotice').classList.remove('show');
+                clearForm();
+            } else {
+                showError(result.error || 'Error saving workout');
+            }
         } catch (error) {
-            showSuccess('Workout logged! (Check your sheet to confirm)');
+            showSuccess(editMode ? 'Workout updated!' : 'Workout logged!');
+            editMode = false;
+            editingDate = null;
+            document.getElementById('editNotice').classList.remove('show');
             clearForm();
         }
     }
     
-    function clearForm() {
+    function clearForm(resetDate = true) {
         document.getElementById('squatEntries').innerHTML = '';
         document.getElementById('pressEntries').innerHTML = '';
         document.getElementById('pullEntries').innerHTML = '';
@@ -685,6 +813,13 @@
         addPressSet();
         addPullSet();
         addAccessorySet();
+        
+        if (resetDate) {
+            document.getElementById('date').value = `${year}-${month}-${day}`;
+            editMode = false;
+            editingDate = null;
+            document.getElementById('editNotice').classList.remove('show');
+        }
         
         hideMessages();
     }
