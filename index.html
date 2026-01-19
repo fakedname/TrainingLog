@@ -701,10 +701,12 @@
     }
     
     function showSuccess(message) {
+        console.log('showSuccess called:', message);
         const successDiv = document.getElementById('success');
         successDiv.textContent = message;
         successDiv.classList.add('show');
         document.getElementById('error').classList.remove('show');
+        console.log('Success div display:', window.getComputedStyle(successDiv).display);
         setTimeout(() => successDiv.classList.remove('show'), 5000);
     }
     
