@@ -589,6 +589,7 @@
     }
     
     function displayRecentWorkouts(workouts) {
+        console.log('Displaying workouts:', JSON.stringify(workouts, null, 2));
         const container = document.getElementById('recentWorkoutsContent');
         container.innerHTML = '';
         
