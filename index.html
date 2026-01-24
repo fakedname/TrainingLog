@@ -328,6 +328,139 @@
             color: #ccc;
         }
     }
+    
+    .recent-workouts {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .recent-workouts {
+            background: #2a2a2a;
+        }
+    }
+    
+    .recent-workouts h2 {
+        color: #333;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .recent-workouts h2 {
+            color: #ffffff;
+        }
+    }
+    
+    .workout-item {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .workout-item {
+            background: #1e1e1e;
+            border: 1px solid #444;
+        }
+    }
+    
+    .workout-date {
+        font-weight: 600;
+        color: #f5576c;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .edit-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    
+    .edit-btn:active {
+        background: #5568d3;
+    }
+    
+    .workout-lifts {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .workout-lifts {
+            color: #ccc;
+        }
+    }
+    
+    .workout-lifts div {
+        margin: 5px 0;
+    }
+    
+    .lift-name {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .lift-name {
+            color: #fff;
+        }
+    }
+    
+    .edit-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        border: 2px solid #667eea;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .edit-input {
+            background: #3a3a3a;
+            border-color: #667eea;
+            color: #ffffff;
+        }
+    }
+    
+    .edit-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .save-btn {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .cancel-btn {
+        background: #999;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+    }
 </style>
 ```
 
@@ -340,6 +473,11 @@
     <div id="form" style="display: none;">
         <h1>🏋️ Training Log</h1>
         <div class="subtitle">Log your training session</div>
+        
+        <div class="recent-workouts" id="recentWorkouts" style="display: none;">
+            <h2>Recent Workouts</h2>
+            <div id="recentWorkoutsContent"></div>
+        </div>
         
         <div class="date-section">
             <label for="date">Date</label>
@@ -400,6 +538,8 @@
     let pullCounter = 0;
     let accessoryCounter = 0;
     
+    let editingWorkout = null;
+    
     // Set today's date
     const today = new Date();
     const year = today.getFullYear();
@@ -421,9 +561,231 @@
             addPressSet();
             addPullSet();
             addAccessorySet();
+            
+            // Load recent workouts
+            loadRecentWorkouts();
         } catch (error) {
             document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
             console.error('Error loading lifts:', error);
+        }
+    }
+    
+    async function loadRecentWorkouts() {
+        try {
+            const response = await fetch(WEBHOOK_URL + '?action=getRecent');
+            const data = await response.json();
+            
+            if (data.workouts && data.workouts.length > 0) {
+                displayRecentWorkouts(data.workouts);
+            }
+        } catch (error) {
+            console.error('Error loading recent workouts:', error);
+        }
+    }
+    
+    function displayRecentWorkouts(workouts) {
+        const container = document.getElementById('recentWorkoutsContent');
+        container.innerHTML = '';
+        
+        workouts.forEach(workout => {
+            const workoutDiv = document.createElement('div');
+            workoutDiv.className = 'workout-item';
+            workoutDiv.id = `workout-${workout.row}`;
+            
+            let liftsHTML = '';
+            
+            if (workout.squat) {
+                liftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
+            }
+            if (workout.press) {
+                liftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
+            }
+            if (workout.pull) {
+                liftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
+            }
+            if (workout.accessory) {
+                liftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
+            }
+            
+            workoutDiv.innerHTML = `
+                <div class="workout-date">
+                    ${workout.date}
+                    <button class="edit-btn" onclick="editWorkout(${workout.row})">Edit</button>
+                </div>
+                <div class="workout-lifts" id="lifts-${workout.row}">
+                    ${liftsHTML}
+                </div>
+                <div id="edit-form-${workout.row}" style="display: none;"></div>
+            `;
+            
+            container.appendChild(workoutDiv);
+        });
+        
+        document.getElementById('recentWorkouts').style.display = 'block';
+    }
+    
+    async function editWorkout(row) {
+        // Get workout data from the display
+        const liftsDiv = document.getElementById(`lifts-${row}`);
+        const editFormDiv = document.getElementById(`edit-form-${row}`);
+        
+        // Parse current data
+        const liftDivs = liftsDiv.querySelectorAll('div');
+        let squatData = '', pressData = '', pullData = '', accessoryData = '';
+        
+        liftDivs.forEach(div => {
+            const text = div.textContent;
+            const [name, data] = text.split(':').map(s => s.trim());
+            
+            if (liftLists.squat.includes(name)) squatData = data;
+            else if (liftLists.upper.includes(name)) pressData = data;
+            else if (liftLists.pull.includes(name)) pullData = data;
+            else if (liftLists.accessory.includes(name)) accessoryData = data;
+        });
+        
+        // Show edit form
+        liftsDiv.style.display = 'none';
+        editFormDiv.style.display = 'block';
+        editFormDiv.innerHTML = `
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Squat (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-squat-${row}" value="${squatData}" placeholder="3.5.315">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Press (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-press-${row}" value="${pressData}" placeholder="4.5.225">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Pull (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-pull-${row}" value="${pullData}" placeholder="1.5.405">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Accessory (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-accessory-${row}" value="${accessoryData}" placeholder="3.10.135">
+            </div>
+            <div class="edit-actions">
+                <button class="cancel-btn" onclick="cancelEdit(${row})">Cancel</button>
+                <button class="save-btn" onclick="saveEdit(${row})">Save</button>
+            </div>
+        `;
+        
+        editingWorkout = row;
+    }
+    
+    function cancelEdit(row) {
+        const liftsDiv = document.getElementById(`lifts-${row}`);
+        const editFormDiv = document.getElementById(`edit-form-${row}`);
+        
+        liftsDiv.style.display = 'block';
+        editFormDiv.style.display = 'none';
+        editingWorkout = null;
+    }
+    
+    async function saveEdit(row) {
+        const squatInput = document.getElementById(`edit-squat-${row}`).value;
+        const pressInput = document.getElementById(`edit-press-${row}`).value;
+        const pullInput = document.getElementById(`edit-pull-${row}`).value;
+        const accessoryInput = document.getElementById(`edit-accessory-${row}`).value;
+        
+        const updateData = {
+            action: 'editEntry',
+            row: row
+        };
+        
+        // Parse and add squat if provided
+        if (squatInput.trim()) {
+            const data = parseData(squatInput);
+            if (data) {
+                // Get lift name from original display
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const squatDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.squat.includes(name);
+                });
+                const liftName = squatDiv ? squatDiv.textContent.split(':')[0].trim() : liftLists.squat[0];
+                
+                updateData.squat = {
+                    lift: liftName,
+                    data: data
+                };
+            }
+        }
+        
+        // Similar for press
+        if (pressInput.trim()) {
+            const data = parseData(pressInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const pressDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.upper.includes(name);
+                });
+                const liftName = pressDiv ? pressDiv.textContent.split(':')[0].trim() : liftLists.upper[0];
+                
+                updateData.press = {
+                    lift: liftName,
+                    data: data
+                };
+            }
+        }
+        
+        // Similar for pull
+        if (pullInput.trim()) {
+            const data = parseData(pullInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const pullDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.pull.includes(name);
+                });
+                const liftName = pullDiv ? pullDiv.textContent.split(':')[0].trim() : liftLists.pull[0];
+                
+                updateData.pull = {
+                    lift: liftName,
+                    data: data
+                };
+            }
+        }
+        
+        // Similar for accessory
+        if (accessoryInput.trim()) {
+            const data = parseData(accessoryInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const accessoryDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.accessory.includes(name);
+                });
+                const liftName = accessoryDiv ? accessoryDiv.textContent.split(':')[0].trim() : liftLists.accessory[0];
+                
+                updateData.accessory = {
+                    lift: liftName,
+                    data: data
+                };
+            }
+        }
+        
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(updateData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showSuccess('Workout updated successfully!');
+                loadRecentWorkouts();
+                editingWorkout = null;
+            } else {
+                showError('Error updating workout');
+            }
+        } catch (error) {
+            showError('Error updating workout');
+            console.error('Error:', error);
         }
     }
     
@@ -674,6 +1036,9 @@
                 showError('Error logging workout: ' + (result.error || 'Unknown error'));
             }
             clearForm();
+            
+            // Reload recent workouts
+            loadRecentWorkouts();
         } catch (error) {
             console.error('Catch block error:', error);
             showError('Error logging workout. Please check your sheet.');
