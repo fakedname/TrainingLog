@@ -241,16 +241,27 @@ function doGet(e) {
 
 function getRecentWorkouts() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Training Log 2026');
-  const lastRow = sheet.getLastRow();
   
-  if (lastRow < 9) {
+  // Get all dates from column A starting at row 9
+  const allDates = sheet.getRange('A9:A').getValues().flat();
+  
+  // Find the last row with actual date data
+  let lastDataRow = 8; // Start before row 9
+  for (let i = allDates.length - 1; i >= 0; i--) {
+    if (allDates[i]) {
+      lastDataRow = 9 + i;
+      break;
+    }
+  }
+  
+  if (lastDataRow < 9) {
     return ContentService.createTextOutput(JSON.stringify({workouts: []}))
       .setMimeType(ContentService.MimeType.JSON);
   }
   
   // Get last 3 rows (or fewer if less than 3 exist)
-  const numRows = Math.min(3, lastRow - 8);
-  const startRow = lastRow - numRows + 1;
+  const numRows = Math.min(3, lastDataRow - 8);
+  const startRow = lastDataRow - numRows + 1;
   
   const data = sheet.getRange(startRow, 1, numRows, 25).getValues();
   
