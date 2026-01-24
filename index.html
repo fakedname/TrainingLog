@@ -572,11 +572,16 @@
     
     async function loadRecentWorkouts() {
         try {
+            console.log('Fetching recent workouts from:', WEBHOOK_URL + '?action=getRecent');
             const response = await fetch(WEBHOOK_URL + '?action=getRecent');
+            console.log('Response status:', response.status);
             const data = await response.json();
+            console.log('Recent workouts data:', data);
             
             if (data.workouts && data.workouts.length > 0) {
                 displayRecentWorkouts(data.workouts);
+            } else {
+                console.log('No workouts found or empty array');
             }
         } catch (error) {
             console.error('Error loading recent workouts:', error);
