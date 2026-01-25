@@ -333,7 +333,7 @@
         background: #f8f9fa;
         padding: 20px;
         border-radius: 10px;
-        margin-bottom: 25px;
+        margin-top: 25px;
     }
     
     @media (prefers-color-scheme: dark) {
@@ -354,7 +354,7 @@
         }
     }
     
-    .workout-item {
+    .workout-date-group {
         background: white;
         padding: 15px;
         border-radius: 8px;
@@ -362,19 +362,47 @@
     }
     
     @media (prefers-color-scheme: dark) {
-        .workout-item {
+        .workout-date-group {
             background: #1e1e1e;
             border: 1px solid #444;
         }
     }
     
-    .workout-date {
+    .workout-date-header {
         font-weight: 600;
         color: #f5576c;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    
+    .workout-row {
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 6px;
         margin-bottom: 10px;
+    }
+    
+    .workout-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .workout-row {
+            background: #2a2a2a;
+        }
+    }
+    
+    .row-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .row-label {
+        font-size: 12px;
+        color: #999;
+        font-weight: 600;
     }
     
     .edit-btn {
@@ -417,7 +445,23 @@
         }
     }
     
-    .edit-input {
+    .edit-field {
+        margin-bottom: 10px;
+    }
+    
+    .edit-field label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .edit-field label {
+            color: #999;
+        }
+    }
+    
+    .edit-input, .edit-select {
         width: 100%;
         padding: 8px;
         font-size: 14px;
@@ -427,7 +471,7 @@
     }
     
     @media (prefers-color-scheme: dark) {
-        .edit-input {
+        .edit-input, .edit-select {
             background: #3a3a3a;
             border-color: #667eea;
             color: #ffffff;
@@ -474,11 +518,6 @@
         <h1>🏋️ Training Log</h1>
         <div class="subtitle">Log your training session</div>
         
-        <div class="recent-workouts" id="recentWorkouts" style="display: none;">
-            <h2>Recent Workouts</h2>
-            <div id="recentWorkoutsContent"></div>
-        </div>
-        
         <div class="date-section">
             <label for="date">Date</label>
             <input type="date" id="date">
@@ -520,6 +559,11 @@
         
         <div id="success" class="success"></div>
         <div id="error" class="error"></div>
+        
+        <div class="recent-workouts" id="recentWorkouts" style="display: none;">
+            <h2>Recent Workouts</h2>
+            <div id="recentWorkoutsContent"></div>
+        </div>
     </div>
 </div>
 
@@ -549,554 +593,5 @@
     // Load lifts on page load
     async function loadLifts() {
         try {
-            const response = await fetch(WEBHOOK_URL);
-            liftLists = await response.json();
-            
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('form').style.display = 'block';
-            document.getElementById('date').value = `${year}-${month}-${day}`;
-            
-            // Add initial entries
-            addSquatSet();
-            addPressSet();
-            addPullSet();
-            addAccessorySet();
-            
-            // Load recent workouts
-            loadRecentWorkouts();
-        } catch (error) {
-            document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
-            console.error('Error loading lifts:', error);
-        }
-    }
-    
-    async function loadRecentWorkouts() {
-        try {
-            console.log('Fetching recent workouts from:', WEBHOOK_URL + '?action=getRecent');
-            const response = await fetch(WEBHOOK_URL + '?action=getRecent');
-            console.log('Response status:', response.status);
-            const data = await response.json();
-            console.log('Recent workouts data:', data);
-            
-            if (data.workouts && data.workouts.length > 0) {
-                displayRecentWorkouts(data.workouts);
-            } else {
-                console.log('No workouts found or empty array');
-            }
-        } catch (error) {
-            console.error('Error loading recent workouts:', error);
-        }
-    }
-    
-    function displayRecentWorkouts(workouts) {
-        console.log('Displaying workouts:', JSON.stringify(workouts, null, 2));
-        const container = document.getElementById('recentWorkoutsContent');
-        container.innerHTML = '';
-        
-        workouts.forEach(workout => {
-            const workoutDiv = document.createElement('div');
-            workoutDiv.className = 'workout-item';
-            workoutDiv.id = `workout-${workout.row}`;
-            
-            let liftsHTML = '';
-            
-            if (workout.squat) {
-                liftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
-            }
-            if (workout.press) {
-                liftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
-            }
-            if (workout.pull) {
-                liftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
-            }
-            if (workout.accessory) {
-                liftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
-            }
-            
-            workoutDiv.innerHTML = `
-                <div class="workout-date">
-                    ${workout.date}
-                    <button class="edit-btn" onclick="editWorkout(${workout.row})">Edit</button>
-                </div>
-                <div class="workout-lifts" id="lifts-${workout.row}">
-                    ${liftsHTML}
-                </div>
-                <div id="edit-form-${workout.row}" style="display: none;"></div>
-            `;
-            
-            container.appendChild(workoutDiv);
-        });
-        
-        document.getElementById('recentWorkouts').style.display = 'block';
-    }
-    
-    async function editWorkout(row) {
-        // Get workout data from the display
-        const liftsDiv = document.getElementById(`lifts-${row}`);
-        const editFormDiv = document.getElementById(`edit-form-${row}`);
-        
-        // Parse current data
-        const liftDivs = liftsDiv.querySelectorAll('div');
-        let squatData = '', pressData = '', pullData = '', accessoryData = '';
-        
-        liftDivs.forEach(div => {
-            const text = div.textContent;
-            const [name, data] = text.split(':').map(s => s.trim());
-            
-            if (liftLists.squat.includes(name)) squatData = data;
-            else if (liftLists.upper.includes(name)) pressData = data;
-            else if (liftLists.pull.includes(name)) pullData = data;
-            else if (liftLists.accessory.includes(name)) accessoryData = data;
-        });
-        
-        // Show edit form
-        liftsDiv.style.display = 'none';
-        editFormDiv.style.display = 'block';
-        editFormDiv.innerHTML = `
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 12px; color: #666;">Squat (sets.reps.weight)</label>
-                <input type="text" class="edit-input" id="edit-squat-${row}" value="${squatData}" placeholder="3.5.315">
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 12px; color: #666;">Press (sets.reps.weight)</label>
-                <input type="text" class="edit-input" id="edit-press-${row}" value="${pressData}" placeholder="4.5.225">
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 12px; color: #666;">Pull (sets.reps.weight)</label>
-                <input type="text" class="edit-input" id="edit-pull-${row}" value="${pullData}" placeholder="1.5.405">
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 12px; color: #666;">Accessory (sets.reps.weight)</label>
-                <input type="text" class="edit-input" id="edit-accessory-${row}" value="${accessoryData}" placeholder="3.10.135">
-            </div>
-            <div class="edit-actions">
-                <button class="cancel-btn" onclick="cancelEdit(${row})">Cancel</button>
-                <button class="save-btn" onclick="saveEdit(${row})">Save</button>
-            </div>
-        `;
-        
-        editingWorkout = row;
-    }
-    
-    function cancelEdit(row) {
-        const liftsDiv = document.getElementById(`lifts-${row}`);
-        const editFormDiv = document.getElementById(`edit-form-${row}`);
-        
-        liftsDiv.style.display = 'block';
-        editFormDiv.style.display = 'none';
-        editingWorkout = null;
-    }
-    
-    async function saveEdit(row) {
-        const squatInput = document.getElementById(`edit-squat-${row}`).value;
-        const pressInput = document.getElementById(`edit-press-${row}`).value;
-        const pullInput = document.getElementById(`edit-pull-${row}`).value;
-        const accessoryInput = document.getElementById(`edit-accessory-${row}`).value;
-        
-        const updateData = {
-            action: 'editEntry',
-            row: row
-        };
-        
-        // Parse and add squat if provided
-        if (squatInput.trim()) {
-            const data = parseData(squatInput);
-            if (data) {
-                // Get lift name from original display
-                const liftsDiv = document.getElementById(`lifts-${row}`);
-                const squatDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
-                    const name = d.textContent.split(':')[0].trim();
-                    return liftLists.squat.includes(name);
-                });
-                const liftName = squatDiv ? squatDiv.textContent.split(':')[0].trim() : liftLists.squat[0];
-                
-                updateData.squat = {
-                    lift: liftName,
-                    data: data
-                };
-            }
-        }
-        
-        // Similar for press
-        if (pressInput.trim()) {
-            const data = parseData(pressInput);
-            if (data) {
-                const liftsDiv = document.getElementById(`lifts-${row}`);
-                const pressDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
-                    const name = d.textContent.split(':')[0].trim();
-                    return liftLists.upper.includes(name);
-                });
-                const liftName = pressDiv ? pressDiv.textContent.split(':')[0].trim() : liftLists.upper[0];
-                
-                updateData.press = {
-                    lift: liftName,
-                    data: data
-                };
-            }
-        }
-        
-        // Similar for pull
-        if (pullInput.trim()) {
-            const data = parseData(pullInput);
-            if (data) {
-                const liftsDiv = document.getElementById(`lifts-${row}`);
-                const pullDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
-                    const name = d.textContent.split(':')[0].trim();
-                    return liftLists.pull.includes(name);
-                });
-                const liftName = pullDiv ? pullDiv.textContent.split(':')[0].trim() : liftLists.pull[0];
-                
-                updateData.pull = {
-                    lift: liftName,
-                    data: data
-                };
-            }
-        }
-        
-        // Similar for accessory
-        if (accessoryInput.trim()) {
-            const data = parseData(accessoryInput);
-            if (data) {
-                const liftsDiv = document.getElementById(`lifts-${row}`);
-                const accessoryDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
-                    const name = d.textContent.split(':')[0].trim();
-                    return liftLists.accessory.includes(name);
-                });
-                const liftName = accessoryDiv ? accessoryDiv.textContent.split(':')[0].trim() : liftLists.accessory[0];
-                
-                updateData.accessory = {
-                    lift: liftName,
-                    data: data
-                };
-            }
-        }
-        
-        try {
-            const response = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                body: JSON.stringify(updateData)
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                showSuccess('Workout updated successfully!');
-                loadRecentWorkouts();
-                editingWorkout = null;
-            } else {
-                showError('Error updating workout');
-            }
-        } catch (error) {
-            showError('Error updating workout');
-            console.error('Error:', error);
-        }
-    }
-    
-    function createLiftEntry(type, id, lifts) {
-        const canRemove = (type === 'squat' && squatCounter > 1) ||
-                        (type === 'press' && pressCounter > 1) ||
-                        (type === 'pull' && pullCounter > 1) ||
-                        (type === 'accessory' && accessoryCounter > 1);
-        
-        const categoryMap = {
-            'squat': 'squat',
-            'press': 'upper',
-            'pull': 'pull',
-            'accessory': 'accessory'
-        };
-        
-        return `
-            <div class="lift-entry" id="${type}-entry-${id}">
-                <div class="lift-row">
-                    <div>
-                        <label for="${type}-lift-${id}">Lift</label>
-                        <select id="${type}-lift-${id}" onchange="handleLiftChange('${type}', ${id}, '${categoryMap[type]}')">
-                            <option value="">-- Skip --</option>
-                            <option value="__ADD_NEW__">➕ Add New Lift</option>
-                            ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label for="${type}-data-${id}">Sets.Reps.Weight</label>
-                        <input type="text" id="${type}-data-${id}" placeholder="3.5.315" inputmode="decimal">
-                        <div class="hint">e.g., 3.5.315</div>
-                    </div>
-                </div>
-                ${canRemove ? `<button class="remove-set-btn" onclick="removeSet('${type}', ${id})">Remove This Set</button>` : ''}
-            </div>
-        `;
-    }
-    
-    async function handleLiftChange(type, id, category) {
-        const selectEl = document.getElementById(`${type}-lift-${id}`);
-        
-        if (selectEl.value === '__ADD_NEW__') {
-            const liftName = prompt('Enter new lift name:');
-            
-            if (liftName && liftName.trim()) {
-                try {
-                    const response = await fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'text/plain',
-                        },
-                        body: JSON.stringify({
-                            action: 'addLift',
-                            category: category,
-                            liftName: liftName.trim()
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Add to local list
-                        if (category === 'squat') liftLists.squat.push(liftName.trim());
-                        else if (category === 'upper') liftLists.upper.push(liftName.trim());
-                        else if (category === 'pull') liftLists.pull.push(liftName.trim());
-                        else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
-                        
-                        // Refresh all dropdowns of this type
-                        refreshDropdowns(type);
-                        
-                        // Select the new lift
-                        selectEl.value = liftName.trim();
-                        
-                        showSuccess(`Added "${liftName.trim()}" to your lift list!`);
-                    } else {
-                        showError('Error adding lift: ' + (result.error || 'Unknown error'));
-                        selectEl.value = '';
-                    }
-                } catch (error) {
-                    showError('Error adding lift. Please try again.');
-                    selectEl.value = '';
-                    console.error('Error:', error);
-                }
-            } else {
-                selectEl.value = '';
-            }
-        }
-    }
-    
-    function refreshDropdowns(type) {
-        const typeMap = {
-            'squat': liftLists.squat,
-            'press': liftLists.upper,
-            'pull': liftLists.pull,
-            'accessory': liftLists.accessory
-        };
-        
-        const lifts = typeMap[type];
-        const selects = document.querySelectorAll(`select[id^="${type}-lift-"]`);
-        
-        selects.forEach(select => {
-            const currentValue = select.value;
-            select.innerHTML = `
-                <option value="">-- Skip --</option>
-                <option value="__ADD_NEW__">➕ Add New Lift</option>
-                ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
-            `;
-            if (currentValue && currentValue !== '__ADD_NEW__') {
-                select.value = currentValue;
-            }
-        });
-    }
-    
-    function addSquatSet() {
-        squatCounter++;
-        const container = document.getElementById('squatEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('squat', squatCounter, liftLists.squat));
-    }
-    
-    function addPressSet() {
-        pressCounter++;
-        const container = document.getElementById('pressEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('press', pressCounter, liftLists.upper));
-    }
-    
-    function addPullSet() {
-        pullCounter++;
-        const container = document.getElementById('pullEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('pull', pullCounter, liftLists.pull));
-    }
-    
-    function addAccessorySet() {
-        accessoryCounter++;
-        const container = document.getElementById('accessoryEntries');
-        container.insertAdjacentHTML('beforeend', createLiftEntry('accessory', accessoryCounter, liftLists.accessory));
-    }
-    
-    function removeSet(type, id) {
-        const entry = document.getElementById(`${type}-entry-${id}`);
-        if (entry) entry.remove();
-    }
-    
-    function parseData(dataString) {
-        if (!dataString.trim()) return null;
-        const parts = dataString.trim().split('.');
-        if (parts.length < 3) return null;
-        
-        // First two parts are sets and reps
-        // Everything after is the weight (handles decimals like 312.5)
-        return {
-            sets: parts[0],
-            reps: parts[1],
-            weight: parts.slice(2).join('.')
-        };
-    }
-    
-    async function submitWorkout() {
-        const date = document.getElementById('date').value;
-        
-        if (!date) {
-            showError('Please select a date');
-            return;
-        }
-        
-        // Collect all lifts grouped by their entry number
-        const maxEntries = Math.max(squatCounter, pressCounter, pullCounter, accessoryCounter);
-        const entries = [];
-        
-        for (let entryNum = 1; entryNum <= maxEntries; entryNum++) {
-            const entry = { date: date };
-            
-            // Check for squat at this position
-            const squatLift = document.getElementById(`squat-lift-${entryNum}`);
-            const squatData = document.getElementById(`squat-data-${entryNum}`);
-            if (squatLift && squatLift.value) {
-                entry.squat = {
-                    lift: squatLift.value,
-                    data: parseData(squatData.value)
-                };
-            }
-            
-            // Check for press at this position
-            const pressLift = document.getElementById(`press-lift-${entryNum}`);
-            const pressData = document.getElementById(`press-data-${entryNum}`);
-            if (pressLift && pressLift.value) {
-                entry.press = {
-                    lift: pressLift.value,
-                    data: parseData(pressData.value)
-                };
-            }
-            
-            // Check for pull at this position
-            const pullLift = document.getElementById(`pull-lift-${entryNum}`);
-            const pullData = document.getElementById(`pull-data-${entryNum}`);
-            if (pullLift && pullLift.value) {
-                entry.pull = {
-                    lift: pullLift.value,
-                    data: parseData(pullData.value)
-                };
-            }
-            
-            // Check for accessory at this position
-            const accLift = document.getElementById(`accessory-lift-${entryNum}`);
-            const accData = document.getElementById(`accessory-data-${entryNum}`);
-            if (accLift && accLift.value) {
-                entry.accessory = {
-                    lift: accLift.value,
-                    data: parseData(accData.value)
-                };
-            }
-            
-            // Add notes to first entry only
-            if (entryNum === 1 && document.getElementById('notes').value) {
-                entry.notes = document.getElementById('notes').value;
-            }
-            
-            // Only add this entry if it has at least one lift
-            if (entry.squat || entry.press || entry.pull || entry.accessory) {
-                entries.push(entry);
-            }
-        }
-        
-        if (entries.length === 0) {
-            showError('Please enter at least one lift');
-            return;
-        }
-        
-        try {
-            console.log('Submitting workout...', entries);
-            
-            const response = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                body: JSON.stringify({ entries: entries })
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-            
-            const result = await response.json();
-            console.log('Result:', result);
-            
-            if (result.success) {
-                showSuccess('Workout logged successfully!');
-            } else {
-                showError('Error logging workout: ' + (result.error || 'Unknown error'));
-            }
-            clearForm();
-            
-            // Reload recent workouts
-            loadRecentWorkouts();
-        } catch (error) {
-            console.error('Catch block error:', error);
-            showError('Error logging workout. Please check your sheet.');
-        }
-    }
-    
-    function clearForm() {
-        document.getElementById('squatEntries').innerHTML = '';
-        document.getElementById('pressEntries').innerHTML = '';
-        document.getElementById('pullEntries').innerHTML = '';
-        document.getElementById('accessoryEntries').innerHTML = '';
-        document.getElementById('notes').value = '';
-        
-        squatCounter = 0;
-        pressCounter = 0;
-        pullCounter = 0;
-        accessoryCounter = 0;
-        
-        addSquatSet();
-        addPressSet();
-        addPullSet();
-        addAccessorySet();
-        
-        // Don't hide messages here - let them show for the full 5 seconds
-    }
-    
-    function showSuccess(message) {
-        console.log('showSuccess called:', message);
-        const successDiv = document.getElementById('success');
-        successDiv.textContent = message;
-        successDiv.classList.add('show');
-        document.getElementById('error').classList.remove('show');
-        console.log('Success div display:', window.getComputedStyle(successDiv).display);
-        setTimeout(() => successDiv.classList.remove('show'), 5000);
-    }
-    
-    function showError(message) {
-        const errorDiv = document.getElementById('error');
-        errorDiv.textContent = message;
-        errorDiv.classList.add('show');
-        document.getElementById('success').classList.remove('show');
-    }
-    
-    function hideMessages() {
-        document.getElementById('success').classList.remove('show');
-        document.getElementById('error').classList.remove('show');
-    }
-    
-    // Load lifts when page loads
-    loadLifts();
-</script>
+            const
 ```
-
-</body>
-</html>
