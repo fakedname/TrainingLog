@@ -39,7 +39,7 @@ function editEntry(sheet, data) {
     if (data.squat === null) {
       // Clear squat section
       sheet.getRange(row, 2, 1, 5).clearContent();
-    } else if (data.squat.lift) {
+    } else {
       sheet.getRange(row, 2).setValue(data.squat.lift);
       sheet.getRange(row, 3).setValue('WS');
       if (data.squat.data) {
@@ -54,7 +54,7 @@ function editEntry(sheet, data) {
   if (data.press !== undefined) {
     if (data.press === null) {
       sheet.getRange(row, 8, 1, 5).clearContent();
-    } else if (data.press.lift) {
+    } else {
       sheet.getRange(row, 8).setValue(data.press.lift);
       sheet.getRange(row, 9).setValue('WS');
       if (data.press.data) {
@@ -69,7 +69,7 @@ function editEntry(sheet, data) {
   if (data.pull !== undefined) {
     if (data.pull === null) {
       sheet.getRange(row, 14, 1, 5).clearContent();
-    } else if (data.pull.lift) {
+    } else {
       sheet.getRange(row, 14).setValue(data.pull.lift);
       sheet.getRange(row, 15).setValue('WS');
       if (data.pull.data) {
@@ -84,7 +84,7 @@ function editEntry(sheet, data) {
   if (data.accessory !== undefined) {
     if (data.accessory === null) {
       sheet.getRange(row, 20, 1, 5).clearContent();
-    } else if (data.accessory.lift) {
+    } else {
       sheet.getRange(row, 20).setValue(data.accessory.lift);
       sheet.getRange(row, 21).setValue('WS');
       if (data.accessory.data) {
@@ -246,7 +246,7 @@ function getRecentWorkouts() {
   const allDates = sheet.getRange('A9:A').getValues().flat();
   
   // Find the last row with actual date data
-  let lastDataRow = 8; // Start before row 9
+  let lastDataRow = 8;
   for (let i = allDates.length - 1; i >= 0; i--) {
     if (allDates[i]) {
       lastDataRow = 9 + i;
@@ -259,21 +259,29 @@ function getRecentWorkouts() {
       .setMimeType(ContentService.MimeType.JSON);
   }
   
-  // Get last 3 rows (or fewer if less than 3 exist)
-  const numRows = Math.min(3, lastDataRow - 8);
+  // Get last 10 rows to handle multiple rows per date
+  const numRows = Math.min(10, lastDataRow - 8);
   const startRow = lastDataRow - numRows + 1;
   
   const data = sheet.getRange(startRow, 1, numRows, 25).getValues();
   
-  const workouts = [];
+  // Group rows by date and collect all rows for each date
+  const dateGroups = {};
   
   for (let i = data.length - 1; i >= 0; i--) {
     const row = data[i];
     const rowNumber = startRow + i;
+    const dateStr = row[0] ? formatDate(row[0]) : '';
+    
+    if (!dateStr) continue;
+    
+    if (!dateGroups[dateStr]) {
+      dateGroups[dateStr] = [];
+    }
     
     const workout = {
       row: rowNumber,
-      date: row[0] ? formatDate(row[0]) : ''
+      date: dateStr
     };
     
     // Squat (columns B-F: 1-5)
@@ -316,10 +324,16 @@ function getRecentWorkouts() {
       };
     }
     
-    workouts.push(workout);
+    dateGroups[dateStr].push(workout);
   }
   
-  return ContentService.createTextOutput(JSON.stringify({workouts: workouts}))
+  // Convert to array and take last 3 dates
+  const workoutsByDate = Object.keys(dateGroups).slice(-3).map(date => ({
+    date: date,
+    rows: dateGroups[date]
+  }));
+  
+  return ContentService.createTextOutput(JSON.stringify({workouts: workoutsByDate}))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
