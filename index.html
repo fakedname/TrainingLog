@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,911 +11,854 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        min-height: 100vh;
+        padding: 20px;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            min-height: 100vh;
-            padding: 20px;
-            -webkit-font-smoothing: antialiased;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            }
-        }
-        
+    }
+    
+    .container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        -webkit-transform: translateZ(0);
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            -webkit-transform: translateZ(0);
+            background: #1e1e1e;
+            color: #ffffff;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .container {
-                background: #1e1e1e;
-                color: #ffffff;
-            }
-        }
-        
+    }
+    
+    h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
+            color: #ffffff;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            h1 {
-                color: #ffffff;
-            }
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-        
+    }
+    
+    .subtitle {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+    
+    .date-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .date-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+            background: #2a2a2a;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .date-section {
-                background: #2a2a2a;
-            }
-        }
-        
+    }
+    
+    .date-section label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .date-section label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .date-section label {
-                color: #ccc;
-            }
-        }
-        
+    }
+    
+    input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         input[type="date"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            color: #333;
+            background: #3a3a3a;
+            border-color: #555;
+            color: #ffffff;
+            color-scheme: dark;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            input[type="date"] {
-                background: #3a3a3a;
-                border-color: #555;
-                color: #ffffff;
-                color-scheme: dark;
-            }
-        }
-        
+    }
+    
+    .lift-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .lift-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: #2a2a2a;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .lift-section {
-                background: #2a2a2a;
-            }
-        }
-        
+    }
+    
+    .lift-section h3 {
+        color: #f5576c;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .lift-section h3 {
-            color: #f5576c;
-            margin-bottom: 15px;
-            font-size: 18px;
+            color: #f093fb;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .lift-section h3 {
-                color: #f093fb;
-            }
-        }
-        
+    }
+    
+    .lift-entry {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .lift-entry:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .lift-entry {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom-color: #444;
         }
-        
-        .lift-entry:last-of-type {
-            border-bottom: none;
-            padding-bottom: 0;
-            margin-bottom: 0;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .lift-entry {
-                border-bottom-color: #444;
-            }
-        }
-        
-        .lift-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
+    }
+    
+    .lift-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            label {
-                color: #ccc;
-            }
-        }
-        
+    }
+    
+    select, input[type="text"], textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         select, input[type="text"], textarea {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            color: #333;
+            background: #3a3a3a;
+            border-color: #555;
+            color: #ffffff;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            select, input[type="text"], textarea {
-                background: #3a3a3a;
-                border-color: #555;
-                color: #ffffff;
-            }
-        }
-        
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: #f5576c;
-        }
-        
-        .notes-section {
-            margin-bottom: 20px;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
+    }
+    
+    select:focus, input:focus, textarea:focus {
+        outline: none;
+        border-color: #f5576c;
+    }
+    
+    .notes-section {
+        margin-bottom: 20px;
+    }
+    
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .add-set-btn {
+        width: 100%;
+        padding: 10px;
+        background: #e0e0e0;
+        color: #666;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .add-set-btn {
-            width: 100%;
-            padding: 10px;
-            background: #e0e0e0;
-            color: #666;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
+            background: #3a3a3a;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .add-set-btn {
-                background: #3a3a3a;
-                color: #ccc;
-            }
-        }
-        
-        .add-set-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .remove-set-btn {
-            padding: 8px 12px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-        
-        .remove-set-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        button {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        button:active {
-            transform: scale(0.98);
-        }
-        
-        .submit-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-        
+    }
+    
+    .add-set-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .remove-set-btn {
+        padding: 8px 12px;
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+    
+    .remove-set-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 10px;
+    }
+    
+    button {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    button:active {
+        transform: scale(0.98);
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+    
+    .clear-btn {
+        background: #e0e0e0;
+        color: #666;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .clear-btn {
-            background: #e0e0e0;
-            color: #666;
+            background: #3a3a3a;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .clear-btn {
-                background: #3a3a3a;
-                color: #ccc;
-            }
-        }
-        
-        .success {
-            background: #4caf50;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .success.show {
-            display: block;
-        }
-        
-        .error {
-            background: #f44336;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .error.show {
-            display: block;
-        }
-        
-        .hint {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
-        }
-        
+    }
+    
+    .success {
+        background: #4caf50;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .success.show {
+        display: block;
+    }
+    
+    .error {
+        background: #f44336;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .error.show {
+        display: block;
+    }
+    
+    .hint {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .loading {
-                color: #ccc;
-            }
-        }
-        
+    }
+    
+    .recent-workouts {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .recent-workouts {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 25px;
+            background: #2a2a2a;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .recent-workouts {
-                background: #2a2a2a;
-            }
-        }
-        
+    }
+    
+    .recent-workouts h2 {
+        color: #333;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .recent-workouts h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 15px;
+            color: #ffffff;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .recent-workouts h2 {
-                color: #ffffff;
-            }
+    }
+    
+    .workout-item {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .workout-item {
+            background: #1e1e1e;
+            border: 1px solid #444;
         }
-        
-        .workout-date-group {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .workout-date-group {
-                background: #1e1e1e;
-                border: 1px solid #444;
-            }
-        }
-        
-        .workout-date-header {
-            font-weight: 600;
-            color: #f5576c;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        
-        .workout-row {
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-        
-        .workout-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .workout-row {
-                background: #2a2a2a;
-            }
-        }
-        
-        .row-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .row-label {
-            font-size: 12px;
-            color: #999;
-            font-weight: 600;
-        }
-        
-        .edit-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        
-        .edit-btn:active {
-            background: #5568d3;
-        }
-        
+    }
+    
+    .workout-date {
+        font-weight: 600;
+        color: #f5576c;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .edit-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    
+    .edit-btn:active {
+        background: #5568d3;
+    }
+    
+    .workout-lifts {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .workout-lifts {
-            font-size: 14px;
-            color: #666;
+            color: #ccc;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .workout-lifts {
-                color: #ccc;
-            }
-        }
-        
-        .workout-lifts div {
-            margin: 5px 0;
-        }
-        
+    }
+    
+    .workout-lifts div {
+        margin: 5px 0;
+    }
+    
+    .lift-name {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    @media (prefers-color-scheme: dark) {
         .lift-name {
-            font-weight: 600;
-            color: #333;
+            color: #fff;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .lift-name {
-                color: #fff;
-            }
+    }
+    
+    .edit-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        border: 2px solid #667eea;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .edit-input {
+            background: #3a3a3a;
+            border-color: #667eea;
+            color: #ffffff;
         }
-        
-        .edit-field {
-            margin-bottom: 10px;
-        }
-        
-        .edit-field label {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .edit-field label {
-                color: #999;
-            }
-        }
-        
-        .edit-input, .edit-select {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 2px solid #667eea;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .edit-input, .edit-select {
-                background: #3a3a3a;
-                border-color: #667eea;
-                color: #ffffff;
-            }
-        }
-        
-        .edit-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .save-btn {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            flex: 1;
-        }
-        
-        .cancel-btn {
-            background: #999;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            flex: 1;
-        }
-    </style>
+    }
+    
+    .edit-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .save-btn {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .cancel-btn {
+        background: #999;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+    }
+</style>
+```
+
 </head>
 <body>
     <div class="container">
         <div id="loading" class="loading">Loading lift options...</div>
+
+```
+    <div id="form" style="display: none;">
+        <h1>🏋️ Training Log</h1>
+        <div class="subtitle">Log your training session</div>
         
-        <div id="form" style="display: none;">
-            <h1>🏋️ Training Log</h1>
-            <div class="subtitle">Log your training session</div>
-            
-            <div class="date-section">
-                <label for="date">Date</label>
-                <input type="date" id="date">
-            </div>
-            
-            <div class="lift-section">
-                <h3>Squat Section</h3>
-                <div id="squatEntries"></div>
-                <button class="add-set-btn" onclick="addSquatSet()">+ Add Another Squat Set</button>
-            </div>
-            
-            <div class="lift-section">
-                <h3>Press Section</h3>
-                <div id="pressEntries"></div>
-                <button class="add-set-btn" onclick="addPressSet()">+ Add Another Press Set</button>
-            </div>
-            
-            <div class="lift-section">
-                <h3>Pull Section</h3>
-                <div id="pullEntries"></div>
-                <button class="add-set-btn" onclick="addPullSet()">+ Add Another Pull Set</button>
-            </div>
-            
-            <div class="lift-section">
-                <h3>Accessories</h3>
-                <div id="accessoryEntries"></div>
-                <button class="add-set-btn" onclick="addAccessorySet()">+ Add Another Accessory Set</button>
-            </div>
-            
-            <div class="notes-section">
-                <label for="notes">Notes (Optional)</label>
-                <textarea id="notes" placeholder="How did the workout feel?"></textarea>
-            </div>
-            
-            <div class="button-group">
-                <button class="clear-btn" onclick="clearForm()">Clear</button>
-                <button class="submit-btn" onclick="submitWorkout()">Submit Workout</button>
-            </div>
-            
-            <div id="success" class="success"></div>
-            <div id="error" class="error"></div>
-            
-            <div class="recent-workouts" id="recentWorkouts" style="display: none;">
-                <h2>Recent Workouts</h2>
-                <div id="recentWorkoutsContent"></div>
-            </div>
+        <div class="recent-workouts" id="recentWorkouts" style="display: none;">
+            <h2>Recent Workouts</h2>
+            <div id="recentWorkoutsContent"></div>
         </div>
-    </div>
-    
-    <script>
-        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzypvKHJs8PGt7NUtvbR5gV0rNlE3oSAfSRAUFVHnj3cYez7oOU-ahdeLzVgUE3YGG0/exec';
         
-        let liftLists = {
-            squat: [],
-            upper: [],
-            pull: [],
-            accessory: []
+        <div class="date-section">
+            <label for="date">Date</label>
+            <input type="date" id="date">
+        </div>
+        
+        <div class="lift-section">
+            <h3>Squat Section</h3>
+            <div id="squatEntries"></div>
+            <button class="add-set-btn" onclick="addSquatSet()">+ Add Another Squat Set</button>
+        </div>
+        
+        <div class="lift-section">
+            <h3>Press Section</h3>
+            <div id="pressEntries"></div>
+            <button class="add-set-btn" onclick="addPressSet()">+ Add Another Press Set</button>
+        </div>
+        
+        <div class="lift-section">
+            <h3>Pull Section</h3>
+            <div id="pullEntries"></div>
+            <button class="add-set-btn" onclick="addPullSet()">+ Add Another Pull Set</button>
+        </div>
+        
+        <div class="lift-section">
+            <h3>Accessories</h3>
+            <div id="accessoryEntries"></div>
+            <button class="add-set-btn" onclick="addAccessorySet()">+ Add Another Accessory Set</button>
+        </div>
+        
+        <div class="notes-section">
+            <label for="notes">Notes (Optional)</label>
+            <textarea id="notes" placeholder="How did the workout feel?"></textarea>
+        </div>
+        
+        <div class="button-group">
+            <button class="clear-btn" onclick="clearForm()">Clear</button>
+            <button class="submit-btn" onclick="submitWorkout()">Submit Workout</button>
+        </div>
+        
+        <div id="success" class="success"></div>
+        <div id="error" class="error"></div>
+    </div>
+</div>
+
+<script>
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzypvKHJs8PGt7NUtvbR5gV0rNlE3oSAfSRAUFVHnj3cYez7oOU-ahdeLzVgUE3YGG0/exec';
+    
+    let liftLists = {
+        squat: [],
+        upper: [],
+        pull: [],
+        accessory: []
+    };
+    
+    let squatCounter = 0;
+    let pressCounter = 0;
+    let pullCounter = 0;
+    let accessoryCounter = 0;
+    
+    let editingWorkout = null;
+    
+    // Set today's date
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    // Load lifts on page load
+    async function loadLifts() {
+        try {
+            const response = await fetch(WEBHOOK_URL);
+            liftLists = await response.json();
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('form').style.display = 'block';
+            document.getElementById('date').value = `${year}-${month}-${day}`;
+            
+            // Add initial entries
+            addSquatSet();
+            addPressSet();
+            addPullSet();
+            addAccessorySet();
+            
+            // Load recent workouts
+            loadRecentWorkouts();
+        } catch (error) {
+            document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
+            console.error('Error loading lifts:', error);
+        }
+    }
+    
+    async function loadRecentWorkouts() {
+        try {
+            console.log('Fetching recent workouts from:', WEBHOOK_URL + '?action=getRecent');
+            const response = await fetch(WEBHOOK_URL + '?action=getRecent');
+            console.log('Response status:', response.status);
+            const data = await response.json();
+            console.log('Recent workouts data:', data);
+            
+            if (data.workouts && data.workouts.length > 0) {
+                displayRecentWorkouts(data.workouts);
+            } else {
+                console.log('No workouts found or empty array');
+            }
+        } catch (error) {
+            console.error('Error loading recent workouts:', error);
+        }
+    }
+    
+    function displayRecentWorkouts(workouts) {
+        console.log('Displaying workouts:', JSON.stringify(workouts, null, 2));
+        const container = document.getElementById('recentWorkoutsContent');
+        container.innerHTML = '';
+        
+        workouts.forEach(workout => {
+            const workoutDiv = document.createElement('div');
+            workoutDiv.className = 'workout-item';
+            workoutDiv.id = `workout-${workout.row}`;
+            
+            let liftsHTML = '';
+            
+            if (workout.squat) {
+                liftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
+            }
+            if (workout.press) {
+                liftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
+            }
+            if (workout.pull) {
+                liftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
+            }
+            if (workout.accessory) {
+                liftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
+            }
+            
+            workoutDiv.innerHTML = `
+                <div class="workout-date">
+                    ${workout.date}
+                    <button class="edit-btn" onclick="editWorkout(${workout.row})">Edit</button>
+                </div>
+                <div class="workout-lifts" id="lifts-${workout.row}">
+                    ${liftsHTML}
+                </div>
+                <div id="edit-form-${workout.row}" style="display: none;"></div>
+            `;
+            
+            container.appendChild(workoutDiv);
+        });
+        
+        document.getElementById('recentWorkouts').style.display = 'block';
+    }
+    
+    async function editWorkout(row) {
+        // Get workout data from the display
+        const liftsDiv = document.getElementById(`lifts-${row}`);
+        const editFormDiv = document.getElementById(`edit-form-${row}`);
+        
+        // Parse current data
+        const liftDivs = liftsDiv.querySelectorAll('div');
+        let squatData = '', pressData = '', pullData = '', accessoryData = '';
+        
+        liftDivs.forEach(div => {
+            const text = div.textContent;
+            const [name, data] = text.split(':').map(s => s.trim());
+            
+            if (liftLists.squat.includes(name)) squatData = data;
+            else if (liftLists.upper.includes(name)) pressData = data;
+            else if (liftLists.pull.includes(name)) pullData = data;
+            else if (liftLists.accessory.includes(name)) accessoryData = data;
+        });
+        
+        // Show edit form
+        liftsDiv.style.display = 'none';
+        editFormDiv.style.display = 'block';
+        editFormDiv.innerHTML = `
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Squat (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-squat-${row}" value="${squatData}" placeholder="3.5.315">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Press (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-press-${row}" value="${pressData}" placeholder="4.5.225">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Pull (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-pull-${row}" value="${pullData}" placeholder="1.5.405">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 12px; color: #666;">Accessory (sets.reps.weight)</label>
+                <input type="text" class="edit-input" id="edit-accessory-${row}" value="${accessoryData}" placeholder="3.10.135">
+            </div>
+            <div class="edit-actions">
+                <button class="cancel-btn" onclick="cancelEdit(${row})">Cancel</button>
+                <button class="save-btn" onclick="saveEdit(${row})">Save</button>
+            </div>
+        `;
+        
+        editingWorkout = row;
+    }
+    
+    function cancelEdit(row) {
+        const liftsDiv = document.getElementById(`lifts-${row}`);
+        const editFormDiv = document.getElementById(`edit-form-${row}`);
+        
+        liftsDiv.style.display = 'block';
+        editFormDiv.style.display = 'none';
+        editingWorkout = null;
+    }
+    
+    async function saveEdit(row) {
+        const squatInput = document.getElementById(`edit-squat-${row}`).value;
+        const pressInput = document.getElementById(`edit-press-${row}`).value;
+        const pullInput = document.getElementById(`edit-pull-${row}`).value;
+        const accessoryInput = document.getElementById(`edit-accessory-${row}`).value;
+        
+        const updateData = {
+            action: 'editEntry',
+            row: row
         };
         
-        let squatCounter = 0;
-        let pressCounter = 0;
-        let pullCounter = 0;
-        let accessoryCounter = 0;
-        
-        let editingWorkout = null;
-        
-        // Set today's date
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        
-        // Load lifts on page load
-        async function loadLifts() {
-            try {
-                console.log('Loading lifts...');
-                const response = await fetch(WEBHOOK_URL);
-                console.log('Lift response:', response.status);
-                liftLists = await response.json();
-                console.log('Lift lists:', liftLists);
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('form').style.display = 'block';
-                document.getElementById('date').value = `${year}-${month}-${day}`;
-                
-                // Add initial entries
-                addSquatSet();
-                addPressSet();
-                addPullSet();
-                addAccessorySet();
-                
-                // Load recent workouts
-                loadRecentWorkouts();
-            } catch (error) {
-                console.error('Error loading lifts:', error);
-                document.getElementById('loading').textContent = 'Error loading lifts. Please refresh.';
-            }
-        }
-        
-        async function loadRecentWorkouts() {
-            try {
-                console.log('Fetching recent workouts...');
-                const response = await fetch(WEBHOOK_URL + '?action=getRecent');
-                console.log('Recent response status:', response.status);
-                const data = await response.json();
-                console.log('Recent workouts data:', data);
-                
-                if (data.workouts && data.workouts.length > 0) {
-                    displayRecentWorkouts(data.workouts);
-                }
-            } catch (error) {
-                console.error('Error loading recent workouts:', error);
-            }
-        }
-        
-        function displayRecentWorkouts(workoutsByDate) {
-            console.log('Displaying workouts by date:', workoutsByDate);
-            const container = document.getElementById('recentWorkoutsContent');
-            container.innerHTML = '';
-            
-            workoutsByDate.forEach(dateGroup => {
-                const dateGroupDiv = document.createElement('div');
-                dateGroupDiv.className = 'workout-date-group';
-                
-                let rowsHTML = '';
-                dateGroup.rows.forEach((workout, index) => {
-                    let liftsHTML = '';
-                    
-                    if (workout.squat) {
-                        liftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
-                    }
-                    if (workout.press) {
-                        liftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
-                    }
-                    if (workout.pull) {
-                        liftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
-                    }
-                    if (workout.accessory) {
-                        liftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
-                    }
-                    
-                    rowsHTML += `
-                        <div class="workout-row">
-                            <div class="row-header">
-                                <span class="row-label">Row ${workout.row}</span>
-                                <button class="edit-btn" onclick="editWorkout(${workout.row})">Edit</button>
-                            </div>
-                            <div class="workout-lifts" id="lifts-${workout.row}">
-                                ${liftsHTML}
-                            </div>
-                            <div id="edit-form-${workout.row}" style="display: none;"></div>
-                        </div>
-                    `;
+        // Parse and add squat if provided
+        if (squatInput.trim()) {
+            const data = parseData(squatInput);
+            if (data) {
+                // Get lift name from original display
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const squatDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.squat.includes(name);
                 });
+                const liftName = squatDiv ? squatDiv.textContent.split(':')[0].trim() : liftLists.squat[0];
                 
-                dateGroupDiv.innerHTML = `
-                    <div class="workout-date-header">${dateGroup.date}</div>
-                    ${rowsHTML}
-                `;
-                
-                container.appendChild(dateGroupDiv);
-            });
-            
-            document.getElementById('recentWorkouts').style.display = 'block';
-        }
-        
-        async function editWorkout(row) {
-            console.log('Editing row:', row);
-            const liftsDiv = document.getElementById(`lifts-${row}`);
-            const editFormDiv = document.getElementById(`edit-form-${row}`);
-            
-            // Get current data from display
-            const liftDivs = liftsDiv.querySelectorAll('div');
-            
-            let currentSquat = { lift: '', data: '' };
-            let currentPress = { lift: '', data: '' };
-            let currentPull = { lift: '', data: '' };
-            let currentAccessory = { lift: '', data: '' };
-            
-            liftDivs.forEach(div => {
-                const text = div.textContent;
-                const colonIndex = text.indexOf(':');
-                if (colonIndex === -1) return;
-                
-                const name = text.substring(0, colonIndex).trim();
-                const data = text.substring(colonIndex + 1).trim();
-                
-                if (liftLists.squat.includes(name)) {
-                    currentSquat = { lift: name, data: data };
-                } else if (liftLists.upper.includes(name)) {
-                    currentPress = { lift: name, data: data };
-                } else if (liftLists.pull.includes(name)) {
-                    currentPull = { lift: name, data: data };
-                } else if (liftLists.accessory.includes(name)) {
-                    currentAccessory = { lift: name, data: data };
-                }
-            });
-            
-            // Show edit form
-            liftsDiv.style.display = 'none';
-            editFormDiv.style.display = 'block';
-            editFormDiv.innerHTML = `
-                <div class="edit-field">
-                    <label>Squat Lift</label>
-                    <select class="edit-select" id="edit-squat-lift-${row}">
-                        <option value="">-- None --</option>
-                        ${liftLists.squat.map(lift => `<option value="${lift}" ${lift === currentSquat.lift ? 'selected' : ''}>${lift}</option>`).join('')}
-                    </select>
-                    <input type="text" class="edit-input" id="edit-squat-data-${row}" value="${currentSquat.data}" placeholder="3.5.315">
-                </div>
-                <div class="edit-field">
-                    <label>Press Lift</label>
-                    <select class="edit-select" id="edit-press-lift-${row}">
-                        <option value="">-- None --</option>
-                        ${liftLists.upper.map(lift => `<option value="${lift}" ${lift === currentPress.lift ? 'selected' : ''}>${lift}</option>`).join('')}
-                    </select>
-                    <input type="text" class="edit-input" id="edit-press-data-${row}" value="${currentPress.data}" placeholder="4.5.225">
-                </div>
-                <div class="edit-field">
-                    <label>Pull Lift</label>
-                    <select class="edit-select" id="edit-pull-lift-${row}">
-                        <option value="">-- None --</option>
-                        ${liftLists.pull.map(lift => `<option value="${lift}" ${lift === currentPull.lift ? 'selected' : ''}>${lift}</option>`).join('')}
-                    </select>
-                    <input type="text" class="edit-input" id="edit-pull-data-${row}" value="${currentPull.data}" placeholder="1.5.405">
-                </div>
-                <div class="edit-field">
-                    <label>Accessory Lift</label>
-                    <select class="edit-select" id="edit-accessory-lift-${row}">
-                        <option value="">-- None --</option>
-                        ${liftLists.accessory.map(lift => `<option value="${lift}" ${lift === currentAccessory.lift ? 'selected' : ''}>${lift}</option>`).join('')}
-                    </select>
-                    <input type="text" class="edit-input" id="edit-accessory-data-${row}" value="${currentAccessory.data}" placeholder="3.10.135">
-                </div>
-                <div class="edit-actions">
-                    <button class="cancel-btn" onclick="cancelEdit(${row})">Cancel</button>
-                    <button class="save-btn" onclick="saveEdit(${row})">Save</button>
-                </div>
-            `;
-            
-            editingWorkout = row;
-        }
-        
-        function cancelEdit(row) {
-            const liftsDiv = document.getElementById(`lifts-${row}`);
-            const editFormDiv = document.getElementById(`edit-form-${row}`);
-            
-            liftsDiv.style.display = 'block';
-            editFormDiv.style.display = 'none';
-            editingWorkout = null;
-        }
-        
-        async function saveEdit(row) {
-            const squatLift = document.getElementById(`edit-squat-lift-${row}`).value;
-            const squatData = document.getElementById(`edit-squat-data-${row}`).value;
-            const pressLift = document.getElementById(`edit-press-lift-${row}`).value;
-            const pressData = document.getElementById(`edit-press-data-${row}`).value;
-            const pullLift = document.getElementById(`edit-pull-lift-${row}`).value;
-            const pullData = document.getElementById(`edit-pull-data-${row}`).value;
-            const accessoryLift = document.getElementById(`edit-accessory-lift-${row}`).value;
-            const accessoryData = document.getElementById(`edit-accessory-data-${row}`).value;
-            
-            const updateData = {
-                action: 'editEntry',
-                row: row
-            };
-            
-            // Add squat if selected
-            if (squatLift) {
-                const data = parseData(squatData);
                 updateData.squat = {
-                    lift: squatLift,
+                    lift: liftName,
                     data: data
                 };
-            } else {
-                updateData.squat = null;
             }
-            
-            // Add press if selected
-            if (pressLift) {
-                const data = parseData(pressData);
-                updateData.press = {
-                    lift: pressLift,
-                    data: data
-                };
-            } else {
-                updateData.press = null;
-            }
-            
-            // Add pull if selected
-            if (pullLift) {
-                const data = parseData(pullData);
-                updateData.pull = {
-                    lift: pullLift,
-                    data: data
-                };
-            } else {
-                updateData.pull = null;
-            }
-            
-            // Add accessory if selected
-            if (accessoryLift) {
-                const data = parseData(accessoryData);
-                updateData.accessory = {
-                    lift: accessoryLift,
-                    data: data
-                };
-            } else {
-                updateData.accessory = null;
-            }
-            
-            console.log('Saving edit:', updateData);
-            
-            try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain',
-                    },
-                    body: JSON.stringify(updateData)
+        }
+        
+        // Similar for press
+        if (pressInput.trim()) {
+            const data = parseData(pressInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const pressDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.upper.includes(name);
                 });
+                const liftName = pressDiv ? pressDiv.textContent.split(':')[0].trim() : liftLists.upper[0];
                 
-                const result = await response.json();
-                console.log('Edit result:', result);
-                
-                if (result.success) {
-                    showSuccess('Workout updated successfully!');
-                    loadRecentWorkouts();
-                    editingWorkout = null;
-                } else {
-                    showError('Error updating workout');
-                }
-            } catch (error) {
-                showError('Error updating workout');
-                console.error('Error:', error);
+                updateData.press = {
+                    lift: liftName,
+                    data: data
+                };
             }
         }
         
-        function createLiftEntry(type, id, lifts) {
-            const canRemove = (type === 'squat' && squatCounter > 1) ||
-                            (type === 'press' && pressCounter > 1) ||
-                            (type === 'pull' && pullCounter > 1) ||
-                            (type === 'accessory' && accessoryCounter > 1);
-            
-            const categoryMap = {
-                'squat': 'squat',
-                'press': 'upper',
-                'pull': 'pull',
-                'accessory': 'accessory'
-            };
-            
-            return `
-                <div class="lift-entry" id="${type}-entry-${id}">
-                    <div class="lift-row">
-                        <div>
-                            <label for="${type}-lift-${id}">Lift</label>
-                            <select id="${type}-lift-${id}" onchange="handleLiftChange('${type}', ${id}, '${categoryMap[type]}')">
-                                <option value="">-- Skip --</option>
-                                <option value="__ADD_NEW__">➕ Add New Lift</option>
-                                ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div>
-                            <label for="${type}-data-${id}">Sets.Reps.Weight</label>
-                            <input type="text" id="${type}-data-${id}" placeholder="3.5.315" inputmode="decimal">
-                            <div class="hint">e.g., 3.5.315</div>
-                        </div>
-                    </div>
-                    ${canRemove ? `<button class="remove-set-btn" onclick="removeSet('${type}', ${id})">Remove This Set</button>` : ''}
-                </div>
-            `;
+        // Similar for pull
+        if (pullInput.trim()) {
+            const data = parseData(pullInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const pullDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.pull.includes(name);
+                });
+                const liftName = pullDiv ? pullDiv.textContent.split(':')[0].trim() : liftLists.pull[0];
+                
+                updateData.pull = {
+                    lift: liftName,
+                    data: data
+                };
+            }
         }
         
-        async function handleLiftChange(type, id, category) {
-            const selectEl = document.getElementById(`${type}-lift-${id}`);
-            
-            if (selectEl.value === '__ADD_NEW__') {
-                const liftName = prompt('Enter new lift name:');
+        // Similar for accessory
+        if (accessoryInput.trim()) {
+            const data = parseData(accessoryInput);
+            if (data) {
+                const liftsDiv = document.getElementById(`lifts-${row}`);
+                const accessoryDiv = Array.from(liftsDiv.querySelectorAll('div')).find(d => {
+                    const name = d.textContent.split(':')[0].trim();
+                    return liftLists.accessory.includes(name);
+                });
+                const liftName = accessoryDiv ? accessoryDiv.textContent.split(':')[0].trim() : liftLists.accessory[0];
                 
-                if (liftName && liftName.trim()) {
-                    try {
-                        const response = await fetch(WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                            },
-                            body: JSON.stringify({
-                                action: 'addLift',
-                                category: category,
-                                liftName: liftName.trim()
-                            })
-                        });
+                updateData.accessory = {
+                    lift: liftName,
+                    data: data
+                };
+            }
+        }
+        
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(updateData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showSuccess('Workout updated successfully!');
+                loadRecentWorkouts();
+                editingWorkout = null;
+            } else {
+                showError('Error updating workout');
+            }
+        } catch (error) {
+            showError('Error updating workout');
+            console.error('Error:', error);
+        }
+    }
+    
+    function createLiftEntry(type, id, lifts) {
+        const canRemove = (type === 'squat' && squatCounter > 1) ||
+                        (type === 'press' && pressCounter > 1) ||
+                        (type === 'pull' && pullCounter > 1) ||
+                        (type === 'accessory' && accessoryCounter > 1);
+        
+        const categoryMap = {
+            'squat': 'squat',
+            'press': 'upper',
+            'pull': 'pull',
+            'accessory': 'accessory'
+        };
+        
+        return `
+            <div class="lift-entry" id="${type}-entry-${id}">
+                <div class="lift-row">
+                    <div>
+                        <label for="${type}-lift-${id}">Lift</label>
+                        <select id="${type}-lift-${id}" onchange="handleLiftChange('${type}', ${id}, '${categoryMap[type]}')">
+                            <option value="">-- Skip --</option>
+                            <option value="__ADD_NEW__">➕ Add New Lift</option>
+                            ${lifts.map(lift => `<option value="${lift}">${lift}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="${type}-data-${id}">Sets.Reps.Weight</label>
+                        <input type="text" id="${type}-data-${id}" placeholder="3.5.315" inputmode="decimal">
+                        <div class="hint">e.g., 3.5.315</div>
+                    </div>
+                </div>
+                ${canRemove ? `<button class="remove-set-btn" onclick="removeSet('${type}', ${id})">Remove This Set</button>` : ''}
+            </div>
+        `;
+    }
+    
+    async function handleLiftChange(type, id, category) {
+        const selectEl = document.getElementById(`${type}-lift-${id}`);
+        
+        if (selectEl.value === '__ADD_NEW__') {
+            const liftName = prompt('Enter new lift name:');
+            
+            if (liftName && liftName.trim()) {
+                try {
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain',
+                        },
+                        body: JSON.stringify({
+                            action: 'addLift',
+                            category: category,
+                            liftName: liftName.trim()
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Add to local list
+                        if (category === 'squat') liftLists.squat.push(liftName.trim());
+                        else if (category === 'upper') liftLists.upper.push(liftName.trim());
+                        else if (category === 'pull') liftLists.pull.push(liftName.trim());
+                        else if (category === 'accessory') liftLists.accessory.push(liftName.trim());
                         
-                        const result = await response.json();
-                        
-                        if (result.success) {
-                            // Add to local list
-                            if​​​​​​​​​​​​​​​​
-(category === ‘squat’) liftLists.squat.push(liftName.trim());
-else if (category === ‘upper’) liftLists.upper.push(liftName.trim());
-else if (category === ‘pull’) liftLists.pull.push(liftName.trim());
-else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim());
                         // Refresh all dropdowns of this type
                         refreshDropdowns(type);
                         
@@ -1012,7 +956,7 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
             return;
         }
         
-        // Build entries grouped by position
+        // Collect all lifts grouped by their entry number
         const maxEntries = Math.max(squatCounter, pressCounter, pullCounter, accessoryCounter);
         const entries = [];
         
@@ -1075,9 +1019,9 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
             return;
         }
         
-        console.log('Submitting workout...', entries);
-        
         try {
+            console.log('Submitting workout...', entries);
+            
             const response = await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
@@ -1087,6 +1031,8 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
             });
             
             console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
             const result = await response.json();
             console.log('Result:', result);
             
@@ -1121,6 +1067,8 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
         addPressSet();
         addPullSet();
         addAccessorySet();
+        
+        // Don't hide messages here - let them show for the full 5 seconds
     }
     
     function showSuccess(message) {
@@ -1129,6 +1077,7 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
         successDiv.textContent = message;
         successDiv.classList.add('show');
         document.getElementById('error').classList.remove('show');
+        console.log('Success div display:', window.getComputedStyle(successDiv).display);
         setTimeout(() => successDiv.classList.remove('show'), 5000);
     }
     
@@ -1147,5 +1096,7 @@ else if (category === ‘accessory’) liftLists.accessory.push(liftName.trim())
     // Load lifts when page loads
     loadLifts();
 </script>
+```
+
 </body>
 </html>
