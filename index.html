@@ -626,11 +626,10 @@ function displayRecentWorkouts(workouts) {
 
     let currentDate = null;
     let currentGroupDiv = null;
-    let currentSections = null;  // will hold {squat: [], press: [], pull: [], accessory: []}
+    let currentSections = null;
 
     workouts.forEach(workout => {
         if (workout.date !== currentDate) {
-            // Finish previous group if exists
             if (currentDate) {
                 renderDayGroup(currentDate, currentSections, currentGroupDiv);
             }
@@ -669,19 +668,19 @@ function displayRecentWorkouts(workouts) {
             currentSections = currentSections;
         }
 
-        // Collect lifts into correct section
         if (workout.squat)     currentSections.squat.push(workout.squat);
         if (workout.press)     currentSections.press.push(workout.press);
         if (workout.pull)      currentSections.pull.push(workout.pull);
         if (workout.accessory) currentSections.accessory.push(workout.accessory);
     });
 
-    // Don't forget the last group
     if (currentDate && currentSections) {
         renderDayGroup(currentDate, currentSections, currentGroupDiv);
     }
 
-    document.getElementById('recentWorkouts').style.display = 'block';  
+    document.getElementById('recentWorkouts').style.display = 'block';
+}
+
 function renderDayGroup(date, sections, groupDiv) {
     const container = groupDiv.querySelector('.workout-lifts');
     container.innerHTML = '';
@@ -719,98 +718,65 @@ function renderDayGroup(date, sections, groupDiv) {
 }
 
 function copyDayWorkout(date) {
-    console.log('Copy button clicked for date:', date);  // ← should appear in console immediately on click
+    console.log('Copy button clicked for date:', date);
 
     const group = document.getElementById(`date-group-${date.replace(/-/g, '')}`);
     if (!group) {
-        console.error('No group element found for date:', date);
-        showError('No workout data found for this date');
+        console.error('No group found for:', date);
+        showError('No workout data for this date');
         return;
     }
-
-    console.log('Found group element');
 
     let text = [];
 
     const sections = group.querySelectorAll('.workout-lifts > div');
-    console.log('Found sections:', sections.length);
+    console.log('Sections count:', sections.length);
 
-    sections.forEach((section, idx) => {
-        console.log(`Processing section ${idx}`);
+    sections.forEach((section, i) => {
         const titleEl = section.querySelector('div:first-child');
-        if (!titleEl) {
-            console.warn('No title in section', idx);
-            return;
-        }
-        
-        const liftEls = section.querySelectorAll('div:not(:first-child)');
-        console.log(`Section ${idx} has ${liftEls.length} lifts`);
+        if (!titleEl) return;
 
-        liftEls.forEach((liftEl, liftIdx) => {
+        const liftEls = section.querySelectorAll('div:not(:first-child)');
+
+        liftEls.forEach(liftEl => {
             const full = liftEl.textContent.trim();
-            console.log(`Lift ${liftIdx} text:`, full);
-            
             const [name, dataRaw] = full.split(':').map(s => s.trim());
-            if (!name || !dataRaw) {
-                console.warn('Invalid lift format:', full);
-                return;
-            }
+            if (!name || !dataRaw) return;
 
             const parts = dataRaw.split('.');
-            let formatted;
+            let formatted = dataRaw;
             if (parts.length >= 3) {
-                const sets   = parts[0];
-                const reps   = parts[1];
+                const sets = parts[0];
+                const reps = parts[1];
                 const weight = parts.slice(2).join('.');
                 formatted = `${sets}x${reps}x${weight}`;
-            } else {
-                formatted = dataRaw.replace(/\./g, 'x');
             }
 
-            const line = `${name} - ${formatted}`;
-            text.push(line);
-            console.log('Added line:', line);
+            text.push(`${name} - ${formatted}`);
         });
     });
 
-    const finalText = text.join('\n');
-    console.log('Final text to copy:\n', finalText);
+    const finalText = text.join('\n').trim();
+    console.log('Text prepared:\n' + finalText);
 
-    if (finalText.trim()) {
-        console.log('Attempting to write to clipboard...');
-        navigator.clipboard.writeText(finalText.trim())
+    if (finalText) {
+        navigator.clipboard.writeText(finalText)
             .then(() => {
-                console.log('Clipboard write SUCCESS');
-                showSuccess('Copied workout for ' + date + '!');
+                console.log('Copy success');
+                showSuccess('Copied!');
             })
             .catch(err => {
-                console.error('Clipboard write FAILED:', err);
-                showError('Failed to copy — check console for details');
+                console.error('Clipboard error:', err);
+                showError('Copy failed (check console)');
             });
     } else {
-        console.warn('No text generated to copy');
-        showError('Nothing to copy for this day');
+        showError('No lifts to copy');
     }
 }
+
 function editDay(date) {
-    showError('Edit Day feature not implemented yet.\n\nComing soon: full day editor.');
-    // Future plan:
-    // 1. Collect all rows for this date
-    // 2. Show modal or inline form with all lifts grouped
-    // 3. Allow editing each lift + add/remove rows
-    // 4. Batch update via new webhook action
+    showError('Edit Day not implemented yet.');
 }
-    const finalText = text.join('\n');
-    if (finalText) {
-        navigator.clipboard.writeText(finalText).then(() => {
-            showSuccess('Copied workout for ' + date + '!');
-        }).catch(err => {
-            console.error('Copy failed:', err);
-            showError('Failed to copy');
-        });
-    }
-}
-    
     async function editWorkout(row) {
         // Get workout data from the display
         const liftsDiv = document.getElementById(`lifts-${row}`);
