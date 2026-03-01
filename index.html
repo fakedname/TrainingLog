@@ -792,17 +792,6 @@ function copyDayWorkout(date) {
         showError('Nothing to copy for this day');
     }
 }
-    const finalText = text.join('\n');
-    if (finalText.trim()) {
-        navigator.clipboard.writeText(finalText.trim()).then(() => {
-            showSuccess('Copied workout for ' + date + '!');
-        }).catch(err => {
-            console.error('Copy failed:', err);
-            showError('Failed to copy');
-        });
-    }
-}
-
 function editDay(date) {
     showError('Edit Day feature not implemented yet.\n\nComing soon: full day editor.');
     // Future plan:
