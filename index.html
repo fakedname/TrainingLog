@@ -726,19 +726,44 @@ function copyDayWorkout(date) {
 
     const sections = group.querySelectorAll('.workout-lifts > div');
     sections.forEach(section => {
-        const title = section.querySelector('div').textContent.trim();
-        const lifts = Array.from(section.querySelectorAll('div:not(:first-child)'));
+        const titleEl = section.querySelector('div:first-child');
+        if (!titleEl) return;
         
-        lifts.forEach(liftEl => {
+        const liftEls = section.querySelectorAll('div:not(:first-child)');
+        
+        liftEls.forEach(liftEl => {
             const full = liftEl.textContent.trim();
-            const [name, data] = full.split(':').map(s => s.trim());
-            if (name && data) {
-                const formatted = data.replace(/\./g, 'x');
-                text.push(`${name} - ${formatted}`);
+            const [name, dataRaw] = full.split(':').map(s => s.trim());
+            if (!name || !dataRaw) return;
+
+            // Properly format sets.reps.weight → setsxrepsxweight (keep decimal in weight)
+            const parts = dataRaw.split('.');
+            let formatted;
+            if (parts.length >= 3) {
+                const sets   = parts[0];
+                const reps   = parts[1];
+                const weight = parts.slice(2).join('.');  // preserves 317.5, 112.5 etc.
+                formatted = `${sets}x${reps}x${weight}`;
+            } else {
+                formatted = dataRaw.replace(/\./g, 'x');  // fallback
             }
+
+            text.push(`${name} - ${formatted}`);
         });
     });
-function editDay(date) {
+
+    const finalText = text.join('\n');
+    if (finalText.trim()) {
+        navigator.clipboard.writeText(finalText.trim()).then(() => {
+            showSuccess('Copied workout for ' + date + '!');
+        }).catch(err => {
+            console.error('Copy failed:', err);
+            showError('Failed to copy');
+        });
+    }
+}
+    
+    function editDay(date) {
     showError('Edit Day feature not implemented yet.\n\nComing soon: full day editor.');
     // Future plan:
     // 1. Collect all rows for this date
