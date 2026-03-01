@@ -648,6 +648,28 @@ function displayRecentWorkouts(workoutsByDate) {
     document.getElementById('recentWorkouts').style.display = 'block';
 }
 
+async function copyWorkout(row, text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showSuccess('Workout copied to clipboard!');
+    } catch (error) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showSuccess('Workout copied to clipboard!');
+        } catch (err) {
+            showError('Failed to copy workout');
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
     
     async function editWorkout(row) {
         // Get workout data from the display
