@@ -716,6 +716,7 @@ function renderDayGroup(date, sections, groupDiv) {
 
         container.appendChild(sectionDiv);
     });
+}
 
 function copyDayWorkout(date) {
     const group = document.getElementById(`date-group-${date.replace(/-/g, '')}`);
@@ -741,7 +742,7 @@ function copyDayWorkout(date) {
             if (parts.length >= 3) {
                 const sets   = parts[0];
                 const reps   = parts[1];
-                const weight = parts.slice(2).join('.');  // preserves 317.5, 112.5 etc.
+                const weight = parts.slice(2).join('.');  // preserves 317.5 etc.
                 formatted = `${sets}x${reps}x${weight}`;
             } else {
                 formatted = dataRaw.replace(/\./g, 'x');  // fallback
@@ -761,8 +762,8 @@ function copyDayWorkout(date) {
         });
     }
 }
-    
-    function editDay(date) {
+
+function editDay(date) {
     showError('Edit Day feature not implemented yet.\n\nComing soon: full day editor.');
     // Future plan:
     // 1. Collect all rows for this date
