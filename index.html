@@ -719,39 +719,79 @@ function renderDayGroup(date, sections, groupDiv) {
 }
 
 function copyDayWorkout(date) {
+    console.log('Copy button clicked for date:', date);  // ← should appear in console immediately on click
+
     const group = document.getElementById(`date-group-${date.replace(/-/g, '')}`);
-    if (!group) return;
+    if (!group) {
+        console.error('No group element found for date:', date);
+        showError('No workout data found for this date');
+        return;
+    }
+
+    console.log('Found group element');
 
     let text = [];
 
     const sections = group.querySelectorAll('.workout-lifts > div');
-    sections.forEach(section => {
+    console.log('Found sections:', sections.length);
+
+    sections.forEach((section, idx) => {
+        console.log(`Processing section ${idx}`);
         const titleEl = section.querySelector('div:first-child');
-        if (!titleEl) return;
+        if (!titleEl) {
+            console.warn('No title in section', idx);
+            return;
+        }
         
         const liftEls = section.querySelectorAll('div:not(:first-child)');
-        
-        liftEls.forEach(liftEl => {
-            const full = liftEl.textContent.trim();
-            const [name, dataRaw] = full.split(':').map(s => s.trim());
-            if (!name || !dataRaw) return;
+        console.log(`Section ${idx} has ${liftEls.length} lifts`);
 
-            // Properly format sets.reps.weight → setsxrepsxweight (keep decimal in weight)
+        liftEls.forEach((liftEl, liftIdx) => {
+            const full = liftEl.textContent.trim();
+            console.log(`Lift ${liftIdx} text:`, full);
+            
+            const [name, dataRaw] = full.split(':').map(s => s.trim());
+            if (!name || !dataRaw) {
+                console.warn('Invalid lift format:', full);
+                return;
+            }
+
             const parts = dataRaw.split('.');
             let formatted;
             if (parts.length >= 3) {
                 const sets   = parts[0];
                 const reps   = parts[1];
-                const weight = parts.slice(2).join('.');  // preserves 317.5 etc.
+                const weight = parts.slice(2).join('.');
                 formatted = `${sets}x${reps}x${weight}`;
             } else {
-                formatted = dataRaw.replace(/\./g, 'x');  // fallback
+                formatted = dataRaw.replace(/\./g, 'x');
             }
 
-            text.push(`${name} - ${formatted}`);
+            const line = `${name} - ${formatted}`;
+            text.push(line);
+            console.log('Added line:', line);
         });
     });
 
+    const finalText = text.join('\n');
+    console.log('Final text to copy:\n', finalText);
+
+    if (finalText.trim()) {
+        console.log('Attempting to write to clipboard...');
+        navigator.clipboard.writeText(finalText.trim())
+            .then(() => {
+                console.log('Clipboard write SUCCESS');
+                showSuccess('Copied workout for ' + date + '!');
+            })
+            .catch(err => {
+                console.error('Clipboard write FAILED:', err);
+                showError('Failed to copy — check console for details');
+            });
+    } else {
+        console.warn('No text generated to copy');
+        showError('Nothing to copy for this day');
+    }
+}
     const finalText = text.join('\n');
     if (finalText.trim()) {
         navigator.clipboard.writeText(finalText.trim()).then(() => {
