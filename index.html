@@ -591,47 +591,63 @@
         }
     }
     
-    function displayRecentWorkouts(workouts) {
-        console.log('Displaying workouts:', JSON.stringify(workouts, null, 2));
-        const container = document.getElementById('recentWorkoutsContent');
-        container.innerHTML = '';
+function displayRecentWorkouts(workoutsByDate) {
+    console.log('Displaying workouts by date:', workoutsByDate);
+    const container = document.getElementById('recentWorkoutsContent');
+    container.innerHTML = '';
+    
+    workoutsByDate.forEach(dateGroup => {
+        const dateGroupDiv = document.createElement('div');
+        dateGroupDiv.className = 'workout-item';
         
-        workouts.forEach(workout => {
-            const workoutDiv = document.createElement('div');
-            workoutDiv.className = 'workout-item';
-            workoutDiv.id = `workout-${workout.row}`;
-            
-            let liftsHTML = '';
-            
+        let allLiftsHTML = '';
+        let copyText = '';
+        
+        // Collect all lifts from all rows for this date
+        dateGroup.rows.forEach(workout => {
             if (workout.squat) {
-                liftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
+                allLiftsHTML += `<div><span class="lift-name">${workout.squat.lift}:</span> ${workout.squat.sets}.${workout.squat.reps}.${workout.squat.weight}</div>`;
+                copyText += `${workout.squat.lift} - ${workout.squat.sets}x${workout.squat.reps}x${workout.squat.weight}\n`;
             }
             if (workout.press) {
-                liftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
+                allLiftsHTML += `<div><span class="lift-name">${workout.press.lift}:</span> ${workout.press.sets}.${workout.press.reps}.${workout.press.weight}</div>`;
+                copyText += `${workout.press.lift} - ${workout.press.sets}x${workout.press.reps}x${workout.press.weight}\n`;
             }
             if (workout.pull) {
-                liftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
+                allLiftsHTML += `<div><span class="lift-name">${workout.pull.lift}:</span> ${workout.pull.sets}.${workout.pull.reps}.${workout.pull.weight}</div>`;
+                copyText += `${workout.pull.lift} - ${workout.pull.sets}x${workout.pull.reps}x${workout.pull.weight}\n`;
             }
             if (workout.accessory) {
-                liftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
+                allLiftsHTML += `<div><span class="lift-name">${workout.accessory.lift}:</span> ${workout.accessory.sets}.${workout.accessory.reps}.${workout.accessory.weight}</div>`;
+                copyText += `${workout.accessory.lift} - ${workout.accessory.sets}x${workout.accessory.reps}x${workout.accessory.weight}\n`;
             }
-            
-            workoutDiv.innerHTML = `
-                <div class="workout-date">
-                    ${workout.date}
-                    <button class="edit-btn" onclick="editWorkout(${workout.row})">Edit</button>
-                </div>
-                <div class="workout-lifts" id="lifts-${workout.row}">
-                    ${liftsHTML}
-                </div>
-                <div id="edit-form-${workout.row}" style="display: none;"></div>
-            `;
-            
-            container.appendChild(workoutDiv);
         });
         
-        document.getElementById('recentWorkouts').style.display = 'block';
-    }
+        // Create edit buttons for each row
+        let editButtonsHTML = dateGroup.rows.map(workout => 
+            `<button class="edit-btn" onclick="editWorkout(${workout.row})">Edit Row ${workout.row}</button>`
+        ).join(' ');
+        
+        dateGroupDiv.innerHTML = `
+            <div class="workout-date">
+                ${dateGroup.date}
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                    <button class="edit-btn" onclick="copyWorkout(\`${copyText.trim().replace(/`/g, '\\`')}\`)">Copy</button>
+                    ${editButtonsHTML}
+                </div>
+            </div>
+            <div class="workout-lifts">
+                ${allLiftsHTML}
+            </div>
+            ${dateGroup.rows.map(workout => `<div id="edit-form-${workout.row}" style="display: none;"></div>`).join('')}
+        `;
+        
+        container.appendChild(dateGroupDiv);
+    });
+    
+    document.getElementById('recentWorkouts').style.display = 'block';
+}
+
     
     async function editWorkout(row) {
         // Get workout data from the display
