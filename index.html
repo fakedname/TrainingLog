@@ -681,8 +681,7 @@ function displayRecentWorkouts(workouts) {
         renderDayGroup(currentDate, currentSections, currentGroupDiv);
     }
 
-    document.getElementById('recentWorkouts').style.display = 'block';
-}    
+    document.getElementById('recentWorkouts').style.display = 'block';  
 function renderDayGroup(date, sections, groupDiv) {
     const container = groupDiv.querySelector('.workout-lifts');
     container.innerHTML = '';
